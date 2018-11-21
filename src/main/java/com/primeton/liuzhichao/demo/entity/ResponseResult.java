@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 返回统一格式的json字符串对象
+ * 返回json字符串对象
  * 
  * @author ASUS
  *

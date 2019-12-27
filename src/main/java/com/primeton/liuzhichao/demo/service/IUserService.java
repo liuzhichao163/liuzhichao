@@ -1,12 +1,14 @@
 package com.primeton.liuzhichao.demo.service;
 
+import java.util.List;
+
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 
 /**
- * 业务层Api
+ * 用户Service层接口Api
  * 
  * @author ASUS
  *
@@ -61,7 +63,7 @@ public interface IUserService {
 	 * @param userName 用户名
 	 * @return 用户数据对象，没有此用户则返回null
 	 */
-	UserAndOrg getUserByName(String userName);
+	PageInfoUser getUserByName(String userName,Integer pageIndex,Integer pageSize);
 
 	/**
 	 * 查询所有用户列表

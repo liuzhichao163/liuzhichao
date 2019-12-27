@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.primeton.liuzhichao.demo.DemoApplication;
 import com.primeton.liuzhichao.demo.controller.UserController;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
+import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
@@ -45,6 +46,7 @@ public class UserControllerTestCase {
 		testCreateUser();
 		testModifyUser();
 		testModifyPassword();
+		
 
 	}
 
@@ -52,7 +54,6 @@ public class UserControllerTestCase {
 	 * 测试用户注册
 	 * @throws DemoException 
 	 */
-	@Test
 	public void testCreateUser() throws DemoException {
 		ResponseResult<Void> rr = null;
 		User data = new User();
@@ -62,7 +63,7 @@ public class UserControllerTestCase {
 		data.setMgrId("1111");
 		data.setOrgId("1111");
 		rr = userController.createUser(data);
-		UserAndOrg userAndOrg = userService.getUserByName("单元测试");
+		UserAndOrg userAndOrg = userMapper.getUserByName("单元测试");
 		assertEquals("200", rr.getState() + "");
 		assertNotNull(userAndOrg);
 	}
@@ -71,9 +72,8 @@ public class UserControllerTestCase {
 	 * 修改用户信息
 	 * @throws DemoException 修改信息失败抛出异常
 	 */
-	@Test
 	public void testModifyUser() throws DemoException {
-		Integer id = userService.getUserByName("单元测试").getId();
+		Integer id = userMapper.getUserByName("单元测试").getId();
 		User user = new User();
 		user.setId(id);
 		user.setJob("客服");
@@ -88,9 +88,8 @@ public class UserControllerTestCase {
 	 * 修改用户密码
 	 * @throws DemoException 
 	 */
-	@Test
 	public void testModifyPassword() throws DemoException {
-		Integer id = userService.getUserByName("单元测试").getId();
+		Integer id = userMapper.getUserByName("单元测试").getId();
 		User user = new User();
 		user.setId(id);
 		user.setOldPassword("111111");
@@ -103,13 +102,15 @@ public class UserControllerTestCase {
 	 * 根据id删除用户功能
 	 * @throws DemoException 
 	 */
-	@Test
 	public void testRemoveUser() throws DemoException {
-		Integer id = userService.getUserByName("单元测试").getId();
+		Integer id = userMapper.getUserByName("单元测试").getId();
 		ResponseResult<Void> rr = userController.removeUser(id);
 		User user = userMapper.getUser(id);
 		Assert.assertEquals("200", rr.getState() + "");
 		assertNull(user);
 	}
+	
+	
+
 
 }

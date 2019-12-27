@@ -14,6 +14,7 @@ public class PageInfoUser {
 	private Integer count;
 	// 每次查询数据集合
 	private List<UserAndOrg> userAndOrg;
+	private List<Org> orgList;
 
 	public PageInfoUser() {
 		super();
@@ -41,9 +42,18 @@ public class PageInfoUser {
 		this.userAndOrg = userAndOrg;
 	}
 
-	@Override
-	public String toString() {
-		return "PageInfoUser [count=" + count + ", userAndOrg=" + userAndOrg + "]";
+	public List<Org> getOrgList() {
+		return orgList;
 	}
 
+	public void setOrgList(List<Org> orgList) {
+		this.orgList = orgList;
+	}
+
+	@Override
+	public String toString() {
+		return "PageInfoUser [count=" + count + ", userAndOrg=" + userAndOrg + ", orgList=" + orgList + "]";
+	}
+
+	
 }

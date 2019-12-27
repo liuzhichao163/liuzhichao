@@ -15,7 +15,7 @@ import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 
 /**
- * 员工管理业务层实现类，负责具体的业务逻辑
+ * 用户Service层Api
  * 
  * @author ASUS
  *
@@ -31,7 +31,7 @@ public class UserServiceImpl implements IUserService {
 	 */
 	@Override
 	public UserAndOrg createUser(User user) throws DemoException {
-		UserAndOrg data = getUserByName(user.getUserName());
+		UserAndOrg data = userMapper.getUserByName(user.getUserName());
 		if (data == null) {
 			// 可以注册,调用addUser()方法插入数据
 			userMapper.insertUser(user);
@@ -107,7 +107,7 @@ public class UserServiceImpl implements IUserService {
 	 */
 	@Override
 	public UserAndOrg login(String userName, String userPassword) throws DemoException {
-		UserAndOrg data = getUserByName(userName);
+		UserAndOrg data = userMapper.getUserByName(userName);
 		if (data != null) {
 			if (data.getUserPassword().equals(userPassword)) {
 				// 登录成功
@@ -121,12 +121,18 @@ public class UserServiceImpl implements IUserService {
 			throw new DemoException(ExceptionEnum.ERROR_NAME_FORMAT);
 		}
 	}
-
+	
+	
 	/**
-	 * 根据用户名查询用户对象数据
+	 * 根据用户名模糊查询查询用户对象数据
 	 */
-	public UserAndOrg getUserByName(String userName) {
-		return userMapper.getUserByName(userName);
+	public PageInfoUser getUserByName(String userName,Integer pageNum,Integer pageSize) {
+		String userNames = "%"+userName+"%";
+		Integer count = userMapper.getTotalCountByFuzzy(userNames);
+		PageHelper.startPage(pageNum, pageSize);
+		List<UserAndOrg> userAndOrg = userMapper.getUserByFuzzy(userNames);
+		PageInfoUser pageInfoUser = new PageInfoUser(count,userAndOrg);
+		return pageInfoUser;
 	}
 
 	/**
@@ -137,8 +143,8 @@ public class UserServiceImpl implements IUserService {
 		// 查询总数据量
 		Integer count = userMapper.getTotalCount();
 		PageHelper.startPage(pageNum, pageSize);
-		List<UserAndOrg> listUser = userMapper.queryUsers();
-		PageInfoUser pageInfoUser = new PageInfoUser(count, listUser);
+		List<UserAndOrg> UserAndOrg = userMapper.queryUsers();
+		PageInfoUser pageInfoUser = new PageInfoUser(count,UserAndOrg);
 		return pageInfoUser;
 	}
 

@@ -15,7 +15,7 @@ import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 
 /**
- * 部门管理控制层Service实现类
+ * 部门Service层Api
  * 
  * @author ASUS
  *
@@ -32,7 +32,7 @@ public class OrgServiceImpl implements IOrgService {
 	 */
 	@Override
 	public Org createOrg(Org org) throws DemoException {
-		if (getOrg(org.getOrgName()) == null) {
+		if (orgMapper.getOrgByName(org.getOrgName()).isEmpty()) {
 			orgMapper.insertOrg(org);
 			return org;
 		} else {
@@ -62,15 +62,17 @@ public class OrgServiceImpl implements IOrgService {
 			throw new DemoException(ExceptionEnum.ERROR_DEPT_DELETE);
 		}
 	}
-
+	
 	/**
-	 * 根据部门名称查询部门信息
+	 * 根据部门编号修改部门信息
 	 */
 	@Override
-	public Org getOrg(String orgName) {
-		return orgMapper.getOrg(orgName);
+	public Integer modifyOrg(Org org) {
+		Integer rows = orgMapper.updateOrg(org.getOrgId(),org.getOrgName(),org.getOrgLoc());
+		return rows;
 	}
-
+	
+	
 	/**
 	 * 根据部门id查询子集部门
 	 * 
@@ -99,15 +101,56 @@ public class OrgServiceImpl implements IOrgService {
 	 * 根据部门编号查询部门员工信息
 	 */
 	@Override
-	public PageInfoUser queryUsers(String orgId, Integer pageNum, Integer pageSize) throws DemoException {
+	public PageInfoUser queryUsers(String orgId) throws DemoException {
 		Integer count = orgMapper.getUsersCount(orgId);
 		if (count == 0) {
 			// 此部门没有员工
 			throw new DemoException(ExceptionEnum.ERROR_DEPT_NOEMP);
 		}
-		PageHelper.startPage(pageNum, pageSize);
 		List<UserAndOrg> userAndOrg = orgMapper.queryUsers(orgId);
-		PageInfoUser page = new PageInfoUser(count, userAndOrg);
-		return page;
+		PageInfoUser pageInfo = new PageInfoUser(count,userAndOrg);
+		return pageInfo;
 	}
+	
+
+
+	
+	/**
+	 * 分页查询所有部门信息
+	 */
+	@Override
+	public PageInfoUser queryOrgs(String orgName,Integer pageNum,Integer pageSize) {
+		PageInfoUser pageInfo = new PageInfoUser();
+		if(pageNum==null && pageSize==null) {
+			pageInfo.setOrgList(orgMapper.getOrgs());
+			return pageInfo;
+		}else {
+			String orgNames = "%"+orgName+"%";
+			Integer count = orgMapper.getTotalCountByFuzzy(orgNames);
+			PageHelper.startPage(pageNum, pageSize);
+			List<Org> orgs = orgMapper.getOrgByName(orgNames);
+			 pageInfo.setCount(count);
+			 pageInfo.setOrgList(orgs);
+			return pageInfo;
+		}
+		
+	}
+	
+	
+	/**
+	 * 根据部门名称查询部门信息
+	 */
+//	@Override
+//	public PageInfoUser getOrgByName(String orgName,Integer pageNum,Integer pageSize) {
+//		String orgNames = "%"+orgName+"%";
+//		Integer count = orgMapper.getTotalCountByFuzzy(orgNames);
+//		PageHelper.startPage(pageNum, pageSize);
+//		List<Org> orgs = orgMapper.getOrgByName(orgNames);
+//		 PageInfoUser pageInfo = new PageInfoUser();
+//		 pageInfo.setCount(count);
+//		 pageInfo.setOrg(orgs);
+//		return pageInfo;
+//	}
+
+
 }

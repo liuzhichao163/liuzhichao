@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.primeton.liuzhichao.demo.entity.Org;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
+import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 
+import io.swagger.models.auth.In;
+
 /**
- * 部门管理业务层接口
+ * 部门Service层接口Api
  * 
  * @author ASUS
  *
@@ -23,14 +26,6 @@ public interface IOrgService {
 	Org createOrg(Org org) throws DemoException;
 
 	/**
-	 * 根据部门名称查询部门信息
-	 * 
-	 * @param orgName 部门名称
-	 * @return 部门数据对象
-	 */
-	Org getOrg(String orgName);
-
-	/**
 	 * 根据部门编号删除部门
 	 * 
 	 * @param orgId 部门编号
@@ -38,6 +33,27 @@ public interface IOrgService {
 	 * @throws DemoException 删除部门失败
 	 */
 	Integer removeOrg(String orgId) throws DemoException;
+	
+	/**
+	 * 根据部门编号修改部门信息
+	 * @param org 部门实体类
+	 * @return 返回生效行数
+	 */
+	Integer modifyOrg(Org org);
+	
+	/**
+	 * 分页查询所有部门信息
+	 * @return
+	 */
+	PageInfoUser queryOrgs(String orgName,Integer pageIndex,Integer pageSize);
+	
+	/**
+	 * 根据部门名称查询部门信息
+	 * 
+	 * @param orgName 部门名称
+	 * @return 部门数据对象
+	 */
+	//PageInfoUser getOrgByName(String orgName,Integer pageIndex,Integer pageSize);
 
 	/**
 	 * 根据部门编号查询下级子级部门
@@ -54,6 +70,6 @@ public interface IOrgService {
 	 * @return 员工信息分页对象
 	 * @throws DemoException 此部门没有员工
 	 */
-	PageInfoUser queryUsers(String orgId, Integer pageNum, Integer pageSize) throws DemoException;
+	PageInfoUser queryUsers(String orgId) throws DemoException;
 
 }

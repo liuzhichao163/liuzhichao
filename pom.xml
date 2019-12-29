@@ -15,14 +15,11 @@
 	</parent>
 	<dependencies>
 		<dependency>
-
-
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-parent</artifactId>
 			<version>2.0.0.RELEASE</version>
 			<type>pom</type>
 		</dependency>
-
 		<!-- 配置spring-*-web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,13 +68,11 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>2.8.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
@@ -100,19 +95,44 @@
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
 			<version>1.2.5</version>
 		</dependency>
-		<!--Swagger插件  -->
+		<!--Swagger插件 -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>2.6.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>2.6.1</version>
 		</dependency>
-
+		<!--Redis -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-redis</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+		<!--fastJson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!--热加载  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -123,15 +143,12 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
 		</plugins>
-
 	</build>
 
 

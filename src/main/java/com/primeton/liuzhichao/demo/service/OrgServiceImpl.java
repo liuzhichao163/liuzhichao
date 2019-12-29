@@ -13,6 +13,8 @@ import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
+import com.primeton.liuzhichao.demo.redis.RedisCache;
+import com.primeton.liuzhichao.demo.redis.RedisDel;
 
 /**
  * 部门Service层Api
@@ -101,6 +103,8 @@ public class OrgServiceImpl implements IOrgService {
 	 * 根据部门编号查询部门员工信息
 	 */
 	@Override
+//	@RedisCache
+	@RedisDel
 	public PageInfoUser queryUsers(String orgId){
 		Integer count = orgMapper.getUsersCount(orgId);
 		if (count == 0) {

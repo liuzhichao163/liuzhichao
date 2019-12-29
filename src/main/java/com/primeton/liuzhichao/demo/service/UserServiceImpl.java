@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements IUserService {
 	 */
 	@Override
 	public UserAndOrg createUser(User user){
+		System.out.println("======"+JSON.toJSONString(user));
 		UserAndOrg data = userMapper.getUserByName(user.getUserName());
 		if (data == null) {
 			// 可以注册,调用addUser()方法插入数据

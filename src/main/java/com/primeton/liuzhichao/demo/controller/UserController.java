@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
@@ -50,6 +51,7 @@ public class UserController extends BaseController {
 	@ApiOperation(value = "添加员工")
 	@PostMapping()
 	public ResponseResult<Void> createUser(@RequestBody User user){
+		System.out.println("======"+JSON.toJSONString(user));
 		userService.createUser(user);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}

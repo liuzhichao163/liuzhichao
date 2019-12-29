@@ -31,7 +31,7 @@ public class OrgServiceImpl implements IOrgService {
 	 * 添加部门
 	 */
 	@Override
-	public Org createOrg(Org org) throws DemoException {
+	public Org createOrg(Org org){
 		if (orgMapper.getOrgByName(org.getOrgName()).isEmpty()) {
 			orgMapper.insertOrg(org);
 			return org;
@@ -46,7 +46,7 @@ public class OrgServiceImpl implements IOrgService {
 	 */
 	@Override
 	@Transactional
-	public Integer removeOrg(String orgId) throws DemoException {
+	public Integer removeOrg(String orgId) {
 		if (getCount(orgId) == 0) {
 			// 删除员工
 			orgMapper.deleteUsers(orgId);
@@ -79,7 +79,7 @@ public class OrgServiceImpl implements IOrgService {
 	 * @return
 	 */
 	@Override
-	public List<Org> queryOrgs(String orgId) throws DemoException {
+	public List<Org> queryOrgs(String orgId){
 		List<Org> orgs = orgMapper.queryOrgs(orgId);
 		if (orgs.isEmpty()) {
 			// 部门无下级部门
@@ -101,7 +101,7 @@ public class OrgServiceImpl implements IOrgService {
 	 * 根据部门编号查询部门员工信息
 	 */
 	@Override
-	public PageInfoUser queryUsers(String orgId) throws DemoException {
+	public PageInfoUser queryUsers(String orgId){
 		Integer count = orgMapper.getUsersCount(orgId);
 		if (count == 0) {
 			// 此部门没有员工

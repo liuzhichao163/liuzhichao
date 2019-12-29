@@ -6,7 +6,7 @@ package com.primeton.liuzhichao.demo.exception;
  * @author ASUS
  *
  */
-public class DemoException extends Exception {
+public class DemoException extends RuntimeException  {
 	/**
 	 * 
 	 */

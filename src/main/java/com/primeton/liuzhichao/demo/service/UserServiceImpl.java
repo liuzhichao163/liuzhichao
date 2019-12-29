@@ -30,7 +30,7 @@ public class UserServiceImpl implements IUserService {
 	 * 注册新用户
 	 */
 	@Override
-	public UserAndOrg createUser(User user) throws DemoException {
+	public UserAndOrg createUser(User user){
 		UserAndOrg data = userMapper.getUserByName(user.getUserName());
 		if (data == null) {
 			// 可以注册,调用addUser()方法插入数据
@@ -47,7 +47,7 @@ public class UserServiceImpl implements IUserService {
 	 */
 	@Override
 	@Transactional
-	public Integer removeUser(Integer id) throws DemoException {
+	public Integer removeUser(Integer id){
 		Integer rows = null;
 		User user = userMapper.getUser(id);
 		if (user != null) {
@@ -64,7 +64,7 @@ public class UserServiceImpl implements IUserService {
 	 * 根据id修改用户密码
 	 */
 	@Override
-	public Integer modifyPassword(Integer id, String oldPassword, String newPassword) throws DemoException {
+	public Integer modifyPassword(Integer id, String oldPassword, String newPassword){
 		// 根据用户id获取用户信息
 		User user = userMapper.getUser(id);
 		if (user == null) {
@@ -93,7 +93,7 @@ public class UserServiceImpl implements IUserService {
 	 * @throws DemoException 修改信息失败抛出异常
 	 */
 	@Override
-	public Integer modifyUser(User user) throws DemoException {
+	public Integer modifyUser(User user){
 		Integer rows = userMapper.updateUser(user.getId(), user.getJob(), user.getMgrId(), user.getOrgId());
 		if (rows != 1) {
 			// 修改失败
@@ -106,7 +106,7 @@ public class UserServiceImpl implements IUserService {
 	 * 用户登录功能
 	 */
 	@Override
-	public UserAndOrg login(String userName, String userPassword) throws DemoException {
+	public UserAndOrg login(String userName, String userPassword){
 		UserAndOrg data = userMapper.getUserByName(userName);
 		if (data != null) {
 			if (data.getUserPassword().equals(userPassword)) {

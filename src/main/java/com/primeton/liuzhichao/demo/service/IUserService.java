@@ -22,7 +22,7 @@ public interface IUserService {
 	 * @return 返回注册成功的用户对象，包含用户id
 	 * @throws DemoException 注册失败抛出DemoException异常
 	 */
-	UserAndOrg createUser(User user) throws DemoException;
+	UserAndOrg createUser(User user);
 
 	/**
 	 * 删除指定的用户信息，此功能是权限功能
@@ -32,7 +32,7 @@ public interface IUserService {
 	 * @return 生效行数
 	 * @throws DemoException 抛出此用户不可删除异常、没有选中被删除的用户、权限不足
 	 */
-	Integer removeUser(Integer id) throws DemoException;
+	Integer removeUser(Integer id);
 
 	/**
 	 * 根据id修改用户密码
@@ -43,7 +43,7 @@ public interface IUserService {
 	 * @throws DemoException 密码修改失败
 	 * @return 返回生效行数
 	 */
-	Integer modifyPassword(Integer id, String oldPassword, String newPassword) throws DemoException;
+	Integer modifyPassword(Integer id, String oldPassword, String newPassword);
 
 	/**
 	 * 根据id修改用户信息
@@ -55,7 +55,7 @@ public interface IUserService {
 	 * @return 生效行数
 	 * @throws DemoException 信息修改失败
 	 */
-	Integer modifyUser(User user)throws DemoException ;
+	Integer modifyUser(User user);
 
 	/**
 	 * 根据用户名查询用户数据对象
@@ -80,6 +80,6 @@ public interface IUserService {
 	 * @throws DemoException 密码不正确抛出异常 用户名不正确抛出异常
 	 * @return 用户数据对象
 	 */
-	UserAndOrg login(String userName, String userPassword) throws DemoException;
+	UserAndOrg login(String userName, String userPassword);
 
 }

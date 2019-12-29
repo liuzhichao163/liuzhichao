@@ -18,7 +18,6 @@ import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
-import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.IOrgService;
 import com.primeton.liuzhichao.demo.service.IUserService;
@@ -50,7 +49,7 @@ public class UserController extends BaseController {
 	 */
 	@ApiOperation(value = "添加员工")
 	@PostMapping()
-	public ResponseResult<Void> createUser(@RequestBody User user) throws DemoException {
+	public ResponseResult<Void> createUser(@RequestBody User user){
 		userService.createUser(user);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
@@ -65,7 +64,7 @@ public class UserController extends BaseController {
 	@ApiOperation(value = "删除员工")
 	@DeleteMapping("/{id}")
 	public ResponseResult<Void> removeUser(
-			@PathVariable @ApiParam(name = "id", value = "员工id", required = true) Integer id) throws DemoException {
+			@PathVariable @ApiParam(name = "id", value = "员工id", required = true) Integer id){
 		userService.removeUser(id);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
@@ -80,7 +79,7 @@ public class UserController extends BaseController {
 	 */
 	@ApiOperation(value = "修改密码")
 	@PutMapping("/actions/password")
-	public ResponseResult<Void> modifyPassword(@RequestBody User user) throws DemoException {
+	public ResponseResult<Void> modifyPassword(@RequestBody User user) {
 		// 调用业务层方法将id，新密码和旧密码传过去
 		userService.modifyPassword(user.getId(), user.getOldPassword(), user.getNewPassword());
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
@@ -96,7 +95,7 @@ public class UserController extends BaseController {
 	 */
 	@ApiOperation(value = "修改用户信息")
 	@PutMapping()
-	public ResponseResult<Void> modifyUser(@RequestBody User user) throws DemoException {
+	public ResponseResult<Void> modifyUser(@RequestBody User user){
 		userService.modifyUser(user);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
@@ -129,7 +128,7 @@ public class UserController extends BaseController {
 	@GetMapping("/orgId")
 	public PageInfoUser queryUsers(
 			@RequestParam @ApiParam(name = "orgId", value = "部门编号", required = true) String orgId)
-			throws DemoException {
+			{
 		return orgService.queryUsers(orgId);
 	}
 	
@@ -146,7 +145,7 @@ public class UserController extends BaseController {
 	 */
 	@ApiOperation(value = "用户登录")
 	@PostMapping("/actions/login")
-	public ResponseResult<Void> login(@RequestBody User user, HttpSession session) throws DemoException {
+	public ResponseResult<Void> login(@RequestBody User user, HttpSession session){
 		UserAndOrg data = userService.login(user.getUserName(), user.getUserPassword());
 		session.setAttribute("id", data.getId());
 		session.setAttribute("userName", data.getUserName());

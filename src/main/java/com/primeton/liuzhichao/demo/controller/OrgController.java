@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.primeton.liuzhichao.demo.entity.Org;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
-import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.IOrgService;
 
@@ -33,7 +32,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "部门controller", tags = { "部门操作接口" })
 @RequestMapping("/api/orgs")
 @RestController
-public class OrgController extends BaseController {
+public class OrgController{
 
 	// 声明部门业务层对象
 	@Autowired
@@ -51,7 +50,7 @@ public class OrgController extends BaseController {
 	 */
 	@ApiOperation(value = "添加部门")
 	@PostMapping()
-	public ResponseResult<Void> createOrg(@RequestBody Org org) throws DemoException {
+	public ResponseResult<Void> createOrg(@RequestBody Org org){
 		orgService.createOrg(org);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
@@ -69,7 +68,7 @@ public class OrgController extends BaseController {
 	@DeleteMapping("/{orgId}")
 	public ResponseResult<Void> removeOrg(
 			@PathVariable @ApiParam(name = "orgId", value = "部门编号", required = true) String orgId)
-			throws DemoException {
+			{
 		// 调用删除方法
 		orgService.removeOrg(orgId);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
@@ -98,7 +97,7 @@ public class OrgController extends BaseController {
 	@ApiOperation(value = "查询子部门")
 	@GetMapping("/actions/children")
 	public List<Org> queryChilds(@RequestParam @ApiParam(name = "orgId", value = "部门编号", required = true) String orgId)
-			throws DemoException {
+			{
 		return orgService.queryOrgs(orgId);
 	}
 

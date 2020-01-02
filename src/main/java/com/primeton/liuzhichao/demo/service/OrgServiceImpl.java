@@ -103,8 +103,8 @@ public class OrgServiceImpl implements IOrgService {
 	 * 根据部门编号查询部门员工信息
 	 */
 	@Override
-//	@RedisCache
-	@RedisDel
+	@RedisCache
+//	@RedisDel
 	public PageInfoUser queryUsers(String orgId){
 		Integer count = orgMapper.getUsersCount(orgId);
 		if (count == 0) {

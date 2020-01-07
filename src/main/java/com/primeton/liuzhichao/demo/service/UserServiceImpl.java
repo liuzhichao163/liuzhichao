@@ -1,8 +1,11 @@
 package com.primeton.liuzhichao.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,10 +13,12 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
+import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
+import com.primeton.liuzhichao.demo.utils.PoiUtils;
 
 /**
  * 用户Service层Api
@@ -148,6 +153,31 @@ public class UserServiceImpl implements IUserService {
 		List<UserAndOrg> UserAndOrg = userMapper.queryUsers();
 		PageInfoUser pageInfoUser = new PageInfoUser(count,UserAndOrg);
 		return pageInfoUser;
+	}
+	
+	/**
+	 * 导出员工信息到excel
+	 */
+	@Override
+	public ResponseEntity<byte[]> exportEmp() {
+		//查询所有的员工信息
+		List<UserAndOrg> UserAndOrg = userMapper.queryUsers();
+		//excel表的表头内容
+		String[] headerName = {"员工ID","员工姓名","职位","所属部门","部门地址"};
+		//cxcel单元格的宽度
+		int[] CellWidth = {10,15,15,15,20};
+		//将员工信息对象数组转换成ArrayLlist(有序)
+		List<List<String>> list = new ArrayList<List<String>>();
+		for(int i=0; i<UserAndOrg.size(); i++) {
+			List<String> contentList = new ArrayList<String>();
+			contentList.add(UserAndOrg.get(i).getUserId());
+			contentList.add(UserAndOrg.get(i).getUserName());
+			contentList.add(UserAndOrg.get(i).getJob());
+			contentList.add(UserAndOrg.get(i).getOrgName());
+			contentList.add(UserAndOrg.get(i).getOrgLoc());
+			list.add(contentList);
+		}
+		return PoiUtils.exportExcel(list, headerName, CellWidth);
 	}
 
 }

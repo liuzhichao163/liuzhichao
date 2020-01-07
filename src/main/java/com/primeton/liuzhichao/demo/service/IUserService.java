@@ -2,7 +2,10 @@ package com.primeton.liuzhichao.demo.service;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
+import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
@@ -81,5 +84,11 @@ public interface IUserService {
 	 * @return 用户数据对象
 	 */
 	UserAndOrg login(String userName, String userPassword);
+	
+	/**
+	 * 导出员工信息到excel
+	 * @return
+	 */
+	ResponseEntity<byte[]> exportEmp();
 
 }

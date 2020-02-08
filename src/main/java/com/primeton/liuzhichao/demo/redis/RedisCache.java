@@ -31,6 +31,6 @@ public @interface RedisCache {
 	 * @Param:  默认10分钟
 	 * @return
 	 */
-	int cacheTime() default 6;
+	int cacheTime() default 10000;
 
 }

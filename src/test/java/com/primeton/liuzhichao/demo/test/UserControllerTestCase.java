@@ -57,8 +57,8 @@ public class UserControllerTestCase {
 	public void testCreateUser() throws DemoException {
 		ResponseResult<Void> rr = null;
 		User data = new User();
-		data.setUserName("单元测试");
-		data.setUserPassword("111111");
+		data.setName("单元测试");
+		data.setPassword("111111");
 		data.setJob("销售");
 		data.setMgrId("1111");
 		data.setOrgId("1111");

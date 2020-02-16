@@ -1,8 +1,15 @@
 package com.primeton.liuzhichao.demo.entity;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import io.swagger.annotations.ApiModel;
+import lombok.ToString;
 
 /**
  * 用户对象实体类
@@ -11,38 +18,90 @@ import io.swagger.annotations.ApiModel;
  *
  */
 @ApiModel(value = "用户对象", description = "员工对象User")
+//@Data
+@ToString
+public class User implements UserDetails {
 
-public class User implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6883723160994808750L;
+	private static final long serialVersionUID = -6438122922334303265L;
 	private Integer id;
 	private String userId;
-	private String userName;
-	private String userPassword;
+	private String name;
+	private String password;
 	private String job;
 	private String mgrId;
 	private String orgId;
 	private String newPassword;
 	private String oldPassword;
+	private String userFace;
+
+	private List<Role> roles;
 
 	public User() {
 		super();
 	}
 
-	public User(Integer id, String userId, String userName, String userPassword, String job, String mgrId, String orgId,
-			String newPassword, String oldPassword) {
+	public User(Integer id, String userId, String name, String password, String job, String mgrId, String orgId,
+			String newPassword, String oldPassword, String userFace, List<Role> roles) {
 		super();
 		this.id = id;
 		this.userId = userId;
-		this.userName = userName;
-		this.userPassword = userPassword;
+		this.name = name;
+		this.password = password;
 		this.job = job;
 		this.mgrId = mgrId;
 		this.orgId = orgId;
 		this.newPassword = newPassword;
 		this.oldPassword = oldPassword;
+		this.userFace = userFace;
+		this.roles = roles;
+	}
+
+	@Override
+	public Collection<GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authoritys = new ArrayList<GrantedAuthority>();
+		for (Role role : roles) {
+			authoritys.add(new SimpleGrantedAuthority(role.getName()));
+		}
+		return authoritys;
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	public Integer getId() {
@@ -61,20 +120,12 @@ public class User implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getName() {
+		return name;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getUserPassword() {
-		return userPassword;
-	}
-
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getJob() {
@@ -117,15 +168,29 @@ public class User implements Serializable {
 		this.oldPassword = oldPassword;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", userId=" + userId + ", userName=" + userName + ", userPassword=" + userPassword
-				+ ", job=" + job + ", mgrId=" + mgrId + ", orgId=" + orgId + ", newPassword=" + newPassword
-				+ ", oldPassword=" + oldPassword + "]";
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserFace() {
+		return userFace;
+	}
+
+	public void setUserFace(String userFace) {
+		this.userFace = userFace;
+	}
+	
+	
+
+
+	
 
 }

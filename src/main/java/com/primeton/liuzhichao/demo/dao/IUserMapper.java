@@ -27,8 +27,8 @@ public interface IUserMapper {
 	 * @return 受影响的行数，如果增加成功，则返回1，否则，返回0
 	 * @throws Exception
 	 */
-	@Insert("INSERT INTO LIUZHICHAO_USER" + "(USER_ID,USER_NAME," + "USER_PASSWORD," + "JOB," + "MGR_ID," + "ORG_ID) "
-			+ "VALUES (#{userId},#{userName},#{userPassword},#{job},#{mgrId},#{orgId})")
+	/*@Insert("INSERT INTO LIUZHICHAO_USER" + "(USER_ID,USER_NAME," + "USER_PASSWORD," + "JOB," + "MGR_ID," + "ORG_ID) "
+			+ "VALUES (#{userId},#{userName},#{userPassword},#{job},#{mgrId},#{orgId})")*/
 	Integer insertUser(User user);
 
 	/**
@@ -37,7 +37,7 @@ public interface IUserMapper {
 	 * @param id 用户id
 	 * @return 生效行数
 	 */
-	@Delete("DELETE FROM LIUZHICHAO_USER WHERE ID = #{id}")
+	/*@Delete("DELETE FROM LIUZHICHAO_USER WHERE ID = #{id}")*/
 	Integer deleteUser(Integer id);
 	
 	/**
@@ -49,13 +49,13 @@ public interface IUserMapper {
 	 * @param modifyTime  修改时间
 	 * @return
 	 */
-	@Update("UPDATE LIUZHICHAO_USER SET USER_PASSWORD = #{userPassword} WHERE ID = #{id}")
+	/*@Update("UPDATE LIUZHICHAO_USER SET USER_PASSWORD = #{userPassword} WHERE ID = #{id}")*/
 	Integer updatePassword(@Param("id") Integer id, @Param("userPassword") String userPassword);
 
 	/**
 	 * 根据id修改用户信息
 	 */
-	@Update("UPDATE LIUZHICHAO_USER SET JOB = #{job},MGR_ID = #{MgrId},ORG_ID =#{orgId} WHERE ID = #{id}")
+	/*@Update("UPDATE LIUZHICHAO_USER SET JOB = #{job},MGR_ID = #{MgrId},ORG_ID =#{orgId} WHERE ID = #{id}")*/
 	Integer updateUser(@Param("id") Integer id, @Param("job") String job, @Param("MgrId") String MgrId,
 			@Param("orgId") String orgId);
 
@@ -64,14 +64,14 @@ public interface IUserMapper {
 	 * 
 	 * @return
 	 */
-	@Select("SELECT COUNT(*) FROM LIUZHICHAO_USER")
+	/*@Select("SELECT COUNT(*) FROM LIUZHICHAO_USER")*/
 	Integer getTotalCount();
 	
 	/**
 	 * 查询此用户名下有多少条数据
 	 * @return
 	 */
-	@Select("SELECT COUNT(*) FROM LIUZHICHAO_USER WHERE USER_NAME LIKE #{userName}")
+	/*@Select("SELECT COUNT(*) FROM LIUZHICHAO_USER WHERE USER_NAME LIKE #{userName}")*/
 	Integer getTotalCountByFuzzy(String userName);
 	
 	/**
@@ -80,9 +80,9 @@ public interface IUserMapper {
 	 * @param userName 用户名
 	 * @return 用户信息集合
 	 */
-	@Select("SELECT U.ID,U.USER_ID AS USERID,U.USER_NAME AS USERNAME,U.USER_PASSWORD AS USERPASSWORD,U.JOB AS JOB,"
+	/*@Select("SELECT U.ID,U.USER_ID AS USERID,U.USER_NAME AS USERNAME,U.USER_PASSWORD AS USERPASSWORD,U.JOB AS JOB,"
 			+ "U.MGR_ID AS MGRID,U.ORG_ID AS ORGID,O.ORG_NAME AS ORGNAME,O.ORG_LOC AS ORGLOC,O.PID AS PID "
-			+ "FROM LIUZHICHAO_USER U LEFT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID WHERE U.USER_NAME = #{userName} ")
+			+ "FROM LIUZHICHAO_USER U LEFT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID WHERE U.USER_NAME = #{userName} ")*/
 	UserAndOrg getUserByName(String userName);
 	
 	/**
@@ -91,9 +91,9 @@ public interface IUserMapper {
 	 * @param userName 用户名
 	 * @return 用户信息集合
 	 */
-	@Select("SELECT U.ID,U.USER_ID AS USERID,U.USER_NAME AS USERNAME,U.USER_PASSWORD AS USERPASSWORD,U.JOB AS JOB,"
+	/*@Select("SELECT U.ID,U.USER_ID AS USERID,U.USER_NAME AS USERNAME,U.USER_PASSWORD AS USERPASSWORD,U.JOB AS JOB,"
 			+ "U.MGR_ID AS MGRID,U.ORG_ID AS ORGID,O.ORG_NAME AS ORGNAME,O.ORG_LOC AS ORGLOC,O.PID AS PID "
-			+ "FROM LIUZHICHAO_USER U LEFT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID WHERE U.USER_NAME LIKE #{userNames} ")
+			+ "FROM LIUZHICHAO_USER U LEFT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID WHERE U.USER_NAME LIKE #{userNames} ")*/
 	List<UserAndOrg> getUserByFuzzy(String userNames);
 
 	/**
@@ -102,8 +102,8 @@ public interface IUserMapper {
 	 * @param id 用户id
 	 * @return 返回用户数据对象
 	 */
-	@Select("SELECT ID,USER_ID AS USERID,USER_NAME AS USERNAME,USER_PASSWORD AS USERPASSWORD,"
-			+ "JOB AS JOB,MGR_ID AS MGRID,ORG_ID AS ORGID FROM LIUZHICHAO_USER WHERE ID = #{id}")
+	/*@Select("SELECT ID,USER_ID AS USERID,USER_NAME AS USERNAME,USER_PASSWORD AS USERPASSWORD,"
+			+ "JOB AS JOB,MGR_ID AS MGRID,ORG_ID AS ORGID FROM LIUZHICHAO_USER WHERE ID = #{id}")*/
 	User getUser(Integer id);
 
 	/**
@@ -111,9 +111,12 @@ public interface IUserMapper {
 	 * 
 	 * @return 含有所有用户信息的集合
 	 */
-	@Select("SELECT U.ID,U.USER_ID AS USERID,U.USER_NAME AS USERNAME,U.USER_PASSWORD AS USERPASSWORD,"
-			+ "U.JOB AS JOB,U.MGR_ID AS MGRID,U.ORG_ID AS ORGID,O.ORG_NAME AS ORGNAME,"
-			+ "O.ORG_LOC AS ORGLOC,O.PID AS PID FROM LIUZHICHAO_USER U LEFT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID")
 	List<UserAndOrg> queryUsers();
+	
+	/**
+	 * 根据用户名查询用户信息，带用户角色
+	 * @return
+	 */
+	User getUserByName2(String userName);
 
 }

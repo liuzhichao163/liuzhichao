@@ -3,9 +3,11 @@ package com.primeton.liuzhichao.demo.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +15,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
-import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
@@ -27,18 +28,31 @@ import com.primeton.liuzhichao.demo.utils.PoiUtils;
  *
  */
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService,UserDetailsService {
 
 	@Autowired
 	private IUserMapper userMapper;
-
+	
+	/**
+	 * SpringSecurity框架，根据登录的用户名查询用户信息（包含当前用户的角色）
+	 */
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userMapper.getUserByName2(username);
+		if(user == null) {
+			throw new DemoException(ExceptionEnum.ERROR_NAME_FORMAT);
+		}
+		return user;
+	}
+	
+	
 	/**
 	 * 注册新用户
 	 */
 	@Override
 	public UserAndOrg createUser(User user){
 		System.out.println("======"+JSON.toJSONString(user));
-		UserAndOrg data = userMapper.getUserByName(user.getUserName());
+		UserAndOrg data = userMapper.getUserByName(user.getName());
 		if (data == null) {
 			// 可以注册,调用addUser()方法插入数据
 			userMapper.insertUser(user);
@@ -80,7 +94,7 @@ public class UserServiceImpl implements IUserService {
 		}
 		Integer result = null;
 		// 进行原密码验证
-		if (user.getUserPassword().equals(oldPassword)) {
+		if (user.getPassword().equals(oldPassword)) {
 			// 密码匹配成功，可以修改密码
 			result = userMapper.updatePassword(id, newPassword);
 			if (result != 1) {
@@ -179,5 +193,7 @@ public class UserServiceImpl implements IUserService {
 		}
 		return PoiUtils.exportExcel(list, headerName, CellWidth);
 	}
+
+	
 
 }

@@ -1,10 +1,19 @@
 package com.primeton.liuzhichao.demo.controller;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +56,9 @@ public class UserController extends BaseController {
 	private IUserService userService;
 	@Autowired
 	private IOrgService orgService;
-
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	
 	/**
 	 * 注册新用户 user 用户数据实体类
 	 * 
@@ -153,7 +164,7 @@ public class UserController extends BaseController {
 	@ApiOperation(value = "用户登录")
 	@PostMapping("/actions/login")
 	public ResponseResult<Void> login(@RequestBody User user, HttpSession session){
-		UserAndOrg data = userService.login(user.getUserName(), user.getUserPassword());
+		UserAndOrg data = userService.login(user.getName(), user.getPassword());
 		session.setAttribute("id", data.getId());
 		session.setAttribute("userName", data.getUserName());
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
@@ -195,6 +206,39 @@ public class UserController extends BaseController {
 //			@RequestParam @ApiParam(name = "pageSize", value = "每页条数", required = true) Integer pageSize) {
 //		return userService.queryUsers(pageIndex, pageSize);
 //	}
-//	
 
+	@PostMapping("/upload/photo")
+	public ResponseResult<Void> uploadPhoto(HttpServletRequest req, MultipartFile file){
+		StringBuffer url = new StringBuffer();
+		String filePath = "/images/"+sdf.format(new Date());
+		//项目部署后的绝对路径
+		String imgFolderPath = req.getServletContext().getRealPath(filePath);
+		System.out.println("项目部署后的绝对路径:"+imgFolderPath);
+		File imgFolder = new File(imgFolderPath);
+		if(!imgFolder.exists()) {
+			imgFolder.mkdirs();
+		}
+		String imgName = UUID.randomUUID() +"_"+ file.getOriginalFilename().replaceAll(" ", "");
+		
+		url.append(req.getScheme()) //当前页面所使用的协议https/http
+			.append("//")
+			.append(req.getServerName()) //当前服务器的名字
+			.append(":")
+			.append(req.getServerPort()) //当前服务器所使用的端口号
+			.append(req.getContextPath()) //当前项目的根路径
+			.append(filePath)
+		    .append("/")
+		    .append(imgName);
+		
+		System.out.println("url:"+url);
+		try {
+			IOUtils.write(file.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
+			
+			return new ResponseResult<Void>(ExceptionEnum.SUCCESS,url.toString());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return new ResponseResult<Void>(ExceptionEnum.UNKONW_ERROR);
+	}
 }

@@ -221,7 +221,7 @@ public class PoiUtils {
 										user.setUserId(cellValue);
 										break;
 									case 1:
-										user.setUserName(cellValue);
+										user.setName(cellValue);
 										break;
 									case 2:
 										user.setJob(cellValue);;

@@ -36,7 +36,7 @@ public class OrgControllerTestCase {
 
 	// =============部门管理测试==============
 
-	@Test
+	//@Test
 	public void testOrg() throws DemoException {
 		testRemoveOrg();
 		testCreateOrg();
@@ -47,7 +47,7 @@ public class OrgControllerTestCase {
 	 * 添加部门
 	 * @throws DemoException 
 	 */
-	
+	@Test
 	public void testCreateOrg() throws DemoException {
 		Org org = new Org();
 		org.setOrgId("111");

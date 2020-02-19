@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.primeton.liuzhichao.demo.dao.IMsgMapper">
+
+	<resultMap id="BaseResultMap" type="com.primeton.liuzhichao.demo.entity.SysMsg">
+		<id column="id" property="id"/>
+		<result column="mid" property="mid"/>
+		<result column="type" property="type"/>
+		<result column="uid" property="uid"/>
+		<result column="state" property="state"/>
+		<association property="msgContent" javaType="com.primeton.liuzhichao.demo.entity.MsgContent">
+			<id column="mcid" property="id"/>
+			<result column="title" property="title"/>
+			<result column="content" property="content"/>
+			<result column="date" property="date"/>
+		</association>
+	</resultMap>
+	
+	
+	<!-- 系统消息入库  -->
+    <insert id="sendMsg" parameterType="com.primeton.liuzhichao.demo.entity.MsgContent" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO LIUZHICHAO_MSGCONTENT  (TITLE,CONTENT) VALUES(#{title},#{content})
+	</insert>
+	
+	<!-- 消息、人员关联表数据入库  -->
+    <insert id="addSysMsg">
+		INSERT INTO LIUZHICHAO_SYSMSG  (MID,UID) VALUES
+		<foreach collection="userAndOrg" item="user" separator=",">
+			(#{mid},#{user.id})
+		</foreach>
+	</insert>
+	
+	<!--查询系统消息列表  -->
+	<select id="queryMsgs" resultMap="BaseResultMap">
+		SELECT
+			SYS.ID,
+			SYS.mid,
+			SYS.type,
+			SYS.uid,
+			SYS.state,
+			MSG.ID AS mcid,
+			MSG.title,
+			MSG.content,
+			MSG.date 
+		FROM
+			LIUZHICHAO_MSGCONTENT MSG,
+			LIUZHICHAO_SYSMSG SYS 
+		WHERE
+			MSG.id = SYS.mid 
+			AND SYS.uid = '50'
+		order by MSG.date desc 
+	</select>
+	
+	<!--修改消息的状态，是否已读  -->
+	<update id="updateMsgState">
+		UPDATE 
+			LIUZHICHAO_SYSMSG SYS 
+		SET 
+			SYS.state = 1
+		WHERE
+			SYS.uid = '50'
+		<if test="flage != -1">
+			AND SYS.mid = #{flage}
+		</if> 
+	</update>
+	
+</mapper>

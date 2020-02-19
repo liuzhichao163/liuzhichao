@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.primeton.liuzhichao.demo.dao.IMenuMapper">
+
+	<resultMap id="BaseResultMap" type="com.primeton.liuzhichao.demo.entity.Menu">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="path" property="path"/>
+        <result column="component" property="component"/>
+        <result column="name" property="name"/>
+        <result column="iconCls" property="iconCls"/>
+        <result column="parentId" property="parentId"/>
+        <association property="meta" javaType="com.primeton.liuzhichao.demo.entity.MenuMeta">
+        	<result column="keepAlive" property="keepAlive"/>
+        	<result column="requireAuth" property="requireAuth"/>
+        </association>
+        <collection property="roles" ofType="com.primeton.liuzhichao.demo.entity.Role">
+        	<id column="rid" property="id"/>
+        	<result column="rname" property="name"/>
+        	<result column="rnameZH" property="nameZH"/>
+        </collection>
+        <collection property="children" ofType="com.primeton.liuzhichao.demo.entity.Menu">
+        	<id column="id2" property="id"/>
+	            <result column="path2" property="path"/>
+	            <result column="component2" property="component"/>
+	            <result column="iconCls2" property="iconCls"/>
+	            <result column="name2" property="name"/>
+            <association property="meta" javaType="com.primeton.liuzhichao.demo.entity.MenuMeta">
+            	<result column="requireAuth2" property="requireAuth"/>
+            	<result column="keepAlive2" property="keepAlive"/>
+            </association>
+            <collection property="children" ofType="com.primeton.liuzhichao.demo.entity.Menu">
+	            <id column="id3" property="id"/>
+	            <result column="name3" property="name"/>
+	        </collection>
+        </collection>
+    </resultMap>
+    
+    
+    <!--查询所有用户的有效信息  -->
+    <select id="getMenus" resultMap="BaseResultMap">
+    	 select 
+			m.id,
+			m.url,
+			m.path,
+			m.component,
+			m.name,
+			m.iconCls,
+			m.keepAlive,
+			m.requireAuth,
+			m.parentId,
+			m.enabled,
+			r.id as rid,
+			r.name as rname,
+			r.nameZh as rnameZH
+		from 
+			liuzhichao_menu m
+		left join 
+			liuzhichao_menu_role mr
+		on 
+			m.id = mr.mid
+		left join 
+			liuzhichao_role r
+		on 
+			r.id = mr.rid
+		order by m.id desc
+    </select>
+    
+    <select id="getMenusByUid" resultMap="BaseResultMap">
+    	select 
+			m1.id,
+			m1.path,
+			m1.component,
+			m1.iconCls,
+			m1.name,
+			m1.requireAuth,
+			m2.path as path2,
+			m2.component as component2,
+			m2.iconCls as iconCls2,
+			m2.name as name2,
+			m2.requireAuth as requireAuth2,
+			m2.keepAlive as keepAlive2
+		from 
+			liuzhichao_menu2 m1,
+			liuzhichao_menu2 m2
+		where
+			m1.id = m2.parentId
+		and m1.id != 1
+		and m2.id in(
+			select 
+						mr.mid 
+					from 
+						liuzhichao_user_role ur 
+					left join 
+						liuzhichao_menu_role2 mr 
+					on 
+						ur.rid = mr.rid 
+					where 
+						ur.uid= #{userId}
+		)
+		and m2.enabled=1
+		order by m1.id,m2.id
+    </select>
+    
+</mapper>

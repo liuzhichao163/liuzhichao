@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.primeton.liuzhichao.demo.dao.IOrgMapper">
+
+	<!-- 添加部门  -->
+    <insert id="insertOrg" parameterType="com.primeton.liuzhichao.demo.entity.Org" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO LIUZHICHAO_ORG  (ORG_ID,ORG_NAME,ORG_LOC,PID) VALUES(#{orgId},#{orgName},#{orgLoc},#{pId})
+	</insert>
+	
+	<!-- 根据部门编号删除部门  -->
+     <delete id="deleteOrg">
+        DELETE FROM LIUZHICHAO_ORG  WHERE ORG_ID = #{orgId}
+    </delete>
+    
+    <!-- 根据部门编号删除员工  -->
+     <delete id="deleteUsers">
+        DELETE FROM LIUZHICHAO_USER WHERE ORG_ID = #{orgId}
+    </delete>
+    
+     <!-- 根据部门编号修改部门信息  -->
+	<update id="updateOrg">
+		UPDATE LIUZHICHAO_ORG  SET ORG_NAME = #{orgName},ORG_LOC = #{orgLoc} WHERE ORG_ID = #{orgId}
+	</update>
+	
+	 <!--根据部门名称查询部门信息  -->
+    <select id="getOrgByName" resultType="com.primeton.liuzhichao.demo.entity.Org">
+    	SELECT
+			ORG_ID AS ORGID,
+			ORG_NAME AS ORGNAME,
+			ORG_LOC AS ORGLOC,
+			PID AS PID 
+		FROM
+			LIUZHICHAO_ORG 
+		WHERE
+			ORG_NAME LIKE #{orgNames}
+    </select>
+
+	<!--根据部门编号查询部门信息  -->
+    <select id="getOrgByOrgId" resultType="com.primeton.liuzhichao.demo.entity.Org">
+    	SELECT
+			ORG_ID AS ORGID,
+			ORG_NAME AS ORGNAME,
+			ORG_LOC AS ORGLOC,
+			PID AS PID 
+		FROM
+			LIUZHICHAO_ORG 
+		WHERE
+			ORG_Id = #{orgId}
+    </select>
+    
+    <!--查询所有部门的信息  -->
+    <select id="getOrgs" resultType="com.primeton.liuzhichao.demo.entity.Org">
+    	SELECT ORG_ID AS ORGID,ORG_NAME AS ORGNAME,ORG_LOC AS ORGLOC,PID AS PID FROM LIUZHICHAO_ORG
+    </select>
+    
+    <!-- 查询一共有多少条数据  -->
+    <select id="getTotalCountByFuzzy" resultType="Integer">
+    	SELECT COUNT(*) FROM LIUZHICHAO_ORG  WHERE ORG_NAME LIKE #{orgName}
+    </select>
+    
+    <!-- 根据部门编号查询有多少下级部门  -->
+    <select id="getCount" resultType="Integer">
+    	SELECT COUNT(*) FROM LIUZHICHAO_ORG  WHERE PID = #{orgId}
+    </select>
+    
+    <!-- 根据部门编号查询此部门员工数量  -->
+    <select id="getUsersCount" resultType="Integer">
+    	SELECT COUNT(*) FROM LIUZHICHAO_USER WHERE ORG_ID = #{orgId}
+    </select>
+    
+    <!--  根据部门编号查询此部门员工信息  -->
+    <select id="queryUsers" resultType="com.primeton.liuzhichao.demo.entity.UserAndOrg">
+    	SELECT
+			U.ID,
+			U.USER_ID AS USERID,
+			U.USER_NAME AS USERNAME,
+			U.USER_PASSWORD AS USERPASSWORD,
+			U.JOB AS JOB,
+			U.MGR_ID AS MGRID,
+			U.ORG_ID AS ORGID,
+			O.ORG_NAME AS ORGNAME,
+			O.ORG_LOC AS ORGLOC,
+			O.PID AS PID
+		FROM
+			LIUZHICHAO_USER U
+			RIGHT JOIN LIUZHICHAO_ORG O ON U.ORG_ID = O.ORG_ID
+		WHERE
+			O.ORG_ID = #{orgId}
+    </select>
+    
+     <!--  根据部门编号查询下级部门信息  -->
+    <select id="queryOrgs" resultType="com.primeton.liuzhichao.demo.entity.Org">
+    	SELECT
+			ORG_ID AS ORGID,
+			ORG_NAME AS ORGNAME,
+			ORG_LOC AS ORGLOC,
+			PID AS PID 
+		FROM
+			LIUZHICHAO_ORG 
+		WHERE
+			PID = #{orgId}
+    </select>
+    
+    
+    
+</mapper>

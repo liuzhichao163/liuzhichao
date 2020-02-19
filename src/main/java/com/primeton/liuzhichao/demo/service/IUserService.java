@@ -90,5 +90,14 @@ public interface IUserService {
 	 * @return
 	 */
 	ResponseEntity<byte[]> exportEmp();
+	
+	/**
+	 * 上传、修改头像
+	 * @param newUserFace  新头像的保存路径
+	 * @param httpUrl      头像的访问路径
+	 * @param oldUserFace  旧头像的访问路径，第一次上传头像为空
+	 * @return
+	 */
+	StringBuffer uploadUserFace(StringBuffer newUserFace, StringBuffer httpUrl, String oldUserFace);
 
 }

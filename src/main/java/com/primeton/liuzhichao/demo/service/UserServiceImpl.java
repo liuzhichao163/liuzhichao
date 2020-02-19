@@ -1,5 +1,6 @@
 package com.primeton.liuzhichao.demo.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.utils.PoiUtils;
+import com.primeton.liuzhichao.demo.utils.Utils;
 
 /**
  * 用户Service层Api
@@ -193,6 +195,21 @@ public class UserServiceImpl implements IUserService,UserDetailsService {
 		}
 		return PoiUtils.exportExcel(list, headerName, CellWidth);
 	}
+
+
+	@Override
+//	@Transactional
+	public StringBuffer uploadUserFace(StringBuffer newUserFace, StringBuffer httpUrl, String oldUserFace) {
+			Utils.deleteFile(oldUserFace);
+			String userId = Utils.getCurrentUser().getUserId();
+			Integer row = userMapper.updateUserFace(newUserFace.toString(),httpUrl.toString(), userId);
+			if(row != 1) {
+				throw new DemoException(ExceptionEnum.UNKONW_ERROR);
+			}
+		return newUserFace;
+	}
+	
+	
 
 	
 

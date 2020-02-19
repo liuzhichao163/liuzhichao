@@ -3,6 +3,7 @@ package com.primeton.liuzhichao.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,19 @@ public class OrgController{
 	// 声明部门业务层对象
 	@Autowired
 	private IOrgService orgService;
-
+	
+	@Value("${images.upload}")
+	private String uploadUrl;
+	
+	@Value("${images.mapping}")
+	private String mappingUrl;
+	
+	@GetMapping("/demo")
+	public void demo() {
+		System.out.println("-----------------------------------");
+		System.out.println("----"+uploadUrl+"---------------"+mappingUrl+"----------------");
+	}
+	
 	/**
 	 * 添加部门功能
 	 * 

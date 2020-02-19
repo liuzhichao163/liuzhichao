@@ -118,5 +118,14 @@ public interface IUserMapper {
 	 * @return
 	 */
 	User getUserByName2(String userName);
+	
+	/**
+	 * 根据用户id修改userface头像地址
+	 * @param url 头像地址
+	 * @param httpUrl 用户访问图片的url
+	 * @param userId 用户id
+	 * @return 受影响行数
+	 */
+	Integer updateUserFace(@Param("url") String url,@Param("httpUrl") String httpUrl,@Param("userId") String userId);
 
 }

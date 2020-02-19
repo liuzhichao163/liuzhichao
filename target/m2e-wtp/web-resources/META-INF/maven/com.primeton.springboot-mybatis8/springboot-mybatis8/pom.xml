@@ -26,10 +26,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!--配置tomcat -->
-		<dependency>
+		 <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -167,6 +167,7 @@
 			<version>2.5</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -182,7 +183,27 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		
+		 <resources>
+		   <resource>
+		      <!-- 指定resources插件处理哪个目录下的资源文件 -->
+		      <directory>src/main/webapp</directory>
+		      <!--  注意此次必须要放在此目录下才能被访问到 -->
+		      <targetPath>META-INF/resources</targetPath>
+		      <includes>
+		         <include>**/**</include>
+		      </includes>
+		   </resource>
+		   <resource>
+		      <directory>src/main/resources</directory>
+		      <filtering>true</filtering>
+		      <includes>
+		         <include>**/*</include>
+		      </includes>
+		   </resource>
+		</resources> 
+		
 	</build>
-
+	
 
 </project>

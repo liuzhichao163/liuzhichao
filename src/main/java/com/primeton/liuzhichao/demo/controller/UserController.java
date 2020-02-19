@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,7 @@ import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.IOrgService;
 import com.primeton.liuzhichao.demo.service.IUserService;
 import com.primeton.liuzhichao.demo.utils.PoiUtils;
+import com.primeton.liuzhichao.demo.utils.Utils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +59,12 @@ public class UserController extends BaseController {
 	private IUserService userService;
 	@Autowired
 	private IOrgService orgService;
+	
+	@Value("${images.mapping}")  //图片访问的url路径
+	private String mappingUrl;
+	
+	@Value("${images.upload}")
+	private String uploadUrl;  //图片上传的保存路径
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 	
@@ -206,39 +215,50 @@ public class UserController extends BaseController {
 //			@RequestParam @ApiParam(name = "pageSize", value = "每页条数", required = true) Integer pageSize) {
 //		return userService.queryUsers(pageIndex, pageSize);
 //	}
-
-	@PostMapping("/upload/photo")
-	public ResponseResult<Void> uploadPhoto(HttpServletRequest req, MultipartFile file){
-		StringBuffer url = new StringBuffer();
-		String filePath = "/images/"+sdf.format(new Date());
+	
+	
+	@PostMapping("/upload/photo2")
+	public ResponseResult<Void> uploadPhoto2(HttpServletRequest req, MultipartFile file,@RequestParam Map<String,String> map){
+		StringBuffer newUserFace = new StringBuffer();
+		StringBuffer httpUrl = new StringBuffer();
+		String filePath = sdf.format(new Date());
+		String oldUserFace = map.get("userFace");
 		//项目部署后的绝对路径
-		String imgFolderPath = req.getServletContext().getRealPath(filePath);
-		System.out.println("项目部署后的绝对路径:"+imgFolderPath);
+		String imgFolderPath = uploadUrl+filePath;
 		File imgFolder = new File(imgFolderPath);
 		if(!imgFolder.exists()) {
 			imgFolder.mkdirs();
 		}
 		String imgName = UUID.randomUUID() +"_"+ file.getOriginalFilename().replaceAll(" ", "");
-		
-		url.append(req.getScheme()) //当前页面所使用的协议https/http
-			.append("//")
-			.append(req.getServerName()) //当前服务器的名字
-			.append(":")
-			.append(req.getServerPort()) //当前服务器所使用的端口号
-			.append(req.getContextPath()) //当前项目的根路径
-			.append(filePath)
-		    .append("/")
-		    .append(imgName);
-		
-		System.out.println("url:"+url);
+		FileOutputStream fos = null;
 		try {
-			IOUtils.write(file.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
-			
-			return new ResponseResult<Void>(ExceptionEnum.SUCCESS,url.toString());
+			 fos = new FileOutputStream(new File(imgFolder, imgName));
+			IOUtils.write(file.getBytes(), fos);
+			String separator = imgFolder.separator;  //路径分割符
+			newUserFace.append(imgFolderPath).append(separator).append(imgName);
+			httpUrl.append(req.getScheme())
+					.append("://")
+					.append(req.getServerName())
+					.append(":")
+					.append(req.getServerPort())
+					.append(separator)
+					.append(mappingUrl)
+					.append(separator)
+					.append(filePath)
+					.append(separator)
+					.append(imgName);
+			//将url保存数据库中
+			userService.uploadUserFace(newUserFace,httpUrl,oldUserFace);
+			User user = Utils.getCurrentUser();
+			user.setHttpUserFace(httpUrl.toString());
+			user.setUserFace(newUserFace.toString());
+			return new ResponseResult<Void>(ExceptionEnum.SUCCESS, user);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		} finally {
+			IOUtils.closeQuietly(fos);
+		}
 		return new ResponseResult<Void>(ExceptionEnum.UNKONW_ERROR);
 	}
 }

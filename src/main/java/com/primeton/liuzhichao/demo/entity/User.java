@@ -36,6 +36,7 @@ public class User implements UserDetails {
 	private String newPassword;
 	private String oldPassword;
 	private String userFace;
+	private String httpUserFace;
 
 	private List<Role> roles;
 
@@ -44,7 +45,7 @@ public class User implements UserDetails {
 	}
 
 	public User(Integer id, String userId, String name, String password, String job, String mgrId, String orgId,
-			String newPassword, String oldPassword, String userFace, List<Role> roles) {
+			String newPassword, String oldPassword, String userFace,String httpUserFace, List<Role> roles) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -56,6 +57,7 @@ public class User implements UserDetails {
 		this.newPassword = newPassword;
 		this.oldPassword = oldPassword;
 		this.userFace = userFace;
+		this.httpUserFace = httpUserFace;
 		this.roles = roles;
 	}
 
@@ -186,6 +188,14 @@ public class User implements UserDetails {
 
 	public void setUserFace(String userFace) {
 		this.userFace = userFace;
+	}
+
+	public String getHttpUserFace() {
+		return httpUserFace;
+	}
+
+	public void setHttpUserFace(String httpUserFace) {
+		this.httpUserFace = httpUserFace;
 	}
 	
 	

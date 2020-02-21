@@ -25,12 +25,12 @@ public class Utils {
 	public static Boolean deleteFile(String filePath) {
 		File file = new File(filePath);
 		Boolean flag = true;
-//		Boolean a = file.exists();
-		
 		if(StringUtils.isNotBlank(filePath) && file.exists()) {
 			flag = file.delete();
 			System.out.println("是否删除："+flag+"---"+filePath);
 		}
 		return flag;
 	}
+	
+	
 }

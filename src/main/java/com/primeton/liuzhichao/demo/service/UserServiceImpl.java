@@ -20,6 +20,8 @@ import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
+import com.primeton.liuzhichao.demo.redis.RedisLock;
+import com.primeton.liuzhichao.demo.utils.MD5Utils;
 import com.primeton.liuzhichao.demo.utils.PoiUtils;
 import com.primeton.liuzhichao.demo.utils.Utils;
 
@@ -35,12 +37,18 @@ public class UserServiceImpl implements IUserService,UserDetailsService {
 	@Autowired
 	private IUserMapper userMapper;
 	
+	@Autowired
+	private RedisLock redisLock;
+	
+	
 	/**
 	 * SpringSecurity框架，根据登录的用户名查询用户信息（包含当前用户的角色）
 	 */
+	@SuppressWarnings("unused")
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userMapper.getUserByName2(username);
+		System.out.println("---loadUserByUsername---"+user.toString());
 		if(user == null) {
 			throw new DemoException(ExceptionEnum.ERROR_NAME_FORMAT);
 		}
@@ -53,16 +61,30 @@ public class UserServiceImpl implements IUserService,UserDetailsService {
 	 */
 	@Override
 	public UserAndOrg createUser(User user){
-		System.out.println("======"+JSON.toJSONString(user));
-		UserAndOrg data = userMapper.getUserByName(user.getName());
-		if (data == null) {
-			// 可以注册,调用addUser()方法插入数据
-			userMapper.insertUser(user);
-			return data;
-		} else {
-			// 注册失败
-			throw new DemoException(ExceptionEnum.ERROR_USERNAME);
+		//System.out.println("======"+JSON.toJSONString(user));
+		UserAndOrg data = null;
+		try {
+			//Redis分布式锁
+			if(redisLock.setLock(user.getName())) {
+				data = userMapper.getUserByName(user.getName());
+				if (data == null) {
+					// 可以注册,调用addUser()方法插入数据
+					user.setPassword(MD5Utils.md5(user.getPassword().toString()));
+					userMapper.insertUser(user);
+				} else {
+					// 注册失败
+					throw new DemoException(ExceptionEnum.ERROR_USERNAME);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			//释放redis锁
+			redisLock.unLock(user.getName());
+			
 		}
+		return data;
+		
 	}
 
 	/**

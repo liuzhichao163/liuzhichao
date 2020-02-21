@@ -68,5 +68,15 @@ public interface JedisClient {
 	 * 删除map
 	 */
 	Long hdel(String key, String... field);
-
+	
+	/**
+	 * 如果key不存在就设置value返回1，如果key已经存在就设置失败返回0
+	 */
+	Long setNX(String key, String value);
+	
+	/**
+	 * 设置新的value值并返回旧的value值
+	 */
+	
+	String getSet(String key, String value);
 }

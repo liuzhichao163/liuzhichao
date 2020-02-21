@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.primeton.liuzhichao.demo.entity.Menu;
+import com.primeton.liuzhichao.demo.redis.JedisClientPool;
+import com.primeton.liuzhichao.demo.redis.Lock;
 import com.primeton.liuzhichao.demo.service.IMenuService;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 /**
  * 只要登录就能访问，因为"/api/menu"不在数据库liuzhichao_menu表中，
  * 所有在CustomMetadataSource拦截器中获取到的权限集合为"ROLE_LOGIN",即登录技能访问的权限
@@ -31,5 +36,6 @@ public class MenuController {
 	public List<Menu> getMenuByUserId(){
 		return menuService.getMenuByUserId();
 	}
+	
 
 }

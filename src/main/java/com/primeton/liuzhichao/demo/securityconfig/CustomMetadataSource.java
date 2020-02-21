@@ -1,4 +1,4 @@
-package com.primeton.liuzhichao.demo.config;
+package com.primeton.liuzhichao.demo.securityconfig;
 
 import java.util.Collection;
 import java.util.List;

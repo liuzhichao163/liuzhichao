@@ -3,6 +3,7 @@ package com.primeton.liuzhichao.demo.redis;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -10,7 +11,8 @@ import com.alibaba.fastjson.JSON;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-@Service
+//@Service
+@Component
 public class JedisClientPool implements JedisClient{
 	
 	@Autowired  //jedis连接池
@@ -21,6 +23,7 @@ public class JedisClientPool implements JedisClient{
 		//从连接池中获取一个连接
 		Jedis jedis = jedisPool.getResource();
         String result = jedis.set(key, value);
+        System.out.println("-----set方法-------");
         jedis.close(); 
         return result;
 	}
@@ -111,6 +114,24 @@ public class JedisClientPool implements JedisClient{
         Long result = jedis.hdel(key, field);
         jedis.close();
         return result;
+	}
+
+	@Override
+	public Long setNX(String key, String value) {
+		Jedis jedis = jedisPool.getResource();
+		System.out.println("===setNX==="+key+"---"+value);
+		Long result = jedis.setnx(key, value);
+		System.out.println("===result==="+result);
+		jedis.close();
+		return result;
+	}
+
+	@Override
+	public String getSet(String key, String value) {
+		Jedis jedis = jedisPool.getResource();
+		String result = jedis.getSet(key, value);
+		jedis.close();
+		return result;
 	}
 
 }

@@ -116,9 +116,9 @@
 			r.NAME,
 			r.nameZH 
 		FROM
-			liuzhichao_user_role ur
-			RIGHT JOIN liuzhichao_user u ON ur.uid = u.id
-			RIGHT JOIN liuzhichao_role r ON ur.rid = r.id 
+			liuzhichao_user u
+			LEFT JOIN liuzhichao_user_role ur ON u.id = ur.uid
+			LEFT JOIN liuzhichao_role r ON r.id = ur.rid 
 		WHERE
 			u.user_name = #{userName}
     </select>

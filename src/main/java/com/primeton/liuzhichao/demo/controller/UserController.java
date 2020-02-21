@@ -76,7 +76,7 @@ public class UserController extends BaseController {
 	@ApiOperation(value = "添加员工")
 	@PostMapping()
 	public ResponseResult<Void> createUser(@RequestBody User user){
-		System.out.println("======"+JSON.toJSONString(user));
+		//System.out.println("======"+JSON.toJSONString(user));
 		userService.createUser(user);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
@@ -151,10 +151,8 @@ public class UserController extends BaseController {
 	 * @return 分页数据对象
 	 * @throws DemoException 自定义异常 查询失败抛出异常
 	 */
-	@ApiOperation(value = "查询部门员工")
 	@GetMapping("/orgId")
-	public PageInfoUser queryUsers(
-			@RequestParam @ApiParam(name = "orgId", value = "部门编号", required = true) String orgId)
+	public PageInfoUser queryUsers(@RequestParam String orgId)
 			{
 		return orgService.queryUsers(orgId);
 	}
@@ -216,7 +214,13 @@ public class UserController extends BaseController {
 //		return userService.queryUsers(pageIndex, pageSize);
 //	}
 	
-	
+	/**
+	 * 上传头像
+	 * @param req 
+	 * @param file 文件对象
+	 * @param map  elementUI上传文件组件携带额外参数对象
+	 * @return     用户对象
+	 */
 	@PostMapping("/upload/photo2")
 	public ResponseResult<Void> uploadPhoto2(HttpServletRequest req, MultipartFile file,@RequestParam Map<String,String> map){
 		StringBuffer newUserFace = new StringBuffer();

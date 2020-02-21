@@ -1,4 +1,4 @@
-package com.primeton.liuzhichao.demo.config;
+package com.primeton.liuzhichao.demo.securityconfig;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,18 +26,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.util.DigestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.UserServiceImpl;
+import com.primeton.liuzhichao.demo.utils.MD5Utils;
 import com.primeton.liuzhichao.demo.utils.Utils;
 /**
  * @EnableGlobalMethodSecurity(prePostEnabled = true) 使用表达式时间方法级别的安全性         4个注解可用
@@ -64,11 +67,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	AuthenticationAccessDeniedHandler deniedHandler;
-
+	
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.userDetailsService(userService)
-      		.passwordEncoder(new BCryptPasswordEncoder());
+      		.passwordEncoder(new PasswordEncoder() {
+				/**
+				 * 对比验证密码
+				 * rawPassword：要被验证的密码
+				 * encodedPassword：数据库中的密码
+				 */
+				@Override
+				public boolean matches(CharSequence rawPassword, String encodedPassword) {
+					return encodedPassword.equals(MD5Utils.md5(rawPassword.toString()));
+				}
+				/**
+				 * 进行将密码MD5加密
+				 */
+				@Override
+				public String encode(CharSequence rawPassword) {
+					return MD5Utils.md5(rawPassword.toString());
+				}
+			});
 	}
 
 	 //WEB安全

@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.primeton.liuzhichao.demo.dao.IMenuMapper;
 import com.primeton.liuzhichao.demo.entity.Menu;
+import com.primeton.liuzhichao.demo.redis.RedisCache;
 import com.primeton.liuzhichao.demo.utils.Utils;
 
 @Service
-public class IMenuServiceImpl implements IMenuService{
+public class MenuServiceImpl implements IMenuService{
 	
 	@Autowired
 	IMenuMapper menuMapper;
@@ -22,6 +23,7 @@ public class IMenuServiceImpl implements IMenuService{
 	}
 
 	@Override
+	@RedisCache
 	public List<Menu> getMenuByUserId() {
 		System.out.println("---当前用户id------:"+Utils.getCurrentUser());
 		return menuMapper.getMenusByUid(Utils.getCurrentUser().getId());

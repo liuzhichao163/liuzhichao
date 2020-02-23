@@ -56,9 +56,9 @@
 			r.name as rname,
 			r.nameZh as rnameZH
 		from 
-			liuzhichao_menu m
+			liuzhichao_menu2 m
 		left join 
-			liuzhichao_menu_role mr
+			liuzhichao_menu_role2 mr
 		on 
 			m.id = mr.mid
 		left join 

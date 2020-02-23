@@ -61,27 +61,27 @@ public class UserServiceImpl implements IUserService,UserDetailsService {
 	 */
 	@Override
 	public UserAndOrg createUser(User user){
-		//System.out.println("======"+JSON.toJSONString(user));
 		UserAndOrg data = null;
+		String userName = user.getName();
 		try {
 			//Redis分布式锁
-			if(redisLock.setLock(user.getName())) {
-				data = userMapper.getUserByName(user.getName());
+			if(redisLock.setLock(userName)) {
+				data = userMapper.getUserByName(userName);
 				if (data == null) {
 					// 可以注册,调用addUser()方法插入数据
 					user.setPassword(MD5Utils.md5(user.getPassword().toString()));
 					userMapper.insertUser(user);
-				} else {
-					// 注册失败
-					throw new DemoException(ExceptionEnum.ERROR_USERNAME);
-				}
+				} 
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			//释放redis锁
-			redisLock.unLock(user.getName());
-			
+			redisLock.unLock(userName);
+		}
+		if(data != null) {
+			// 注册失败
+			throw new DemoException(ExceptionEnum.ERROR_USERNAME);
 		}
 		return data;
 		

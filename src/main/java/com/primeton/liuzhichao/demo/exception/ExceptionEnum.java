@@ -34,6 +34,8 @@ public enum ExceptionEnum {
 	ERROR_ID_DISABLED(904,"账户被禁用，请联系管理员"),
 	ERROR_LOGIN_FAILURE(905,"登录失败"),
 	ERROR_PWD_PASTDUE(906,"密码过期请联系管理员"),
+	ERROR_ROLE_NAMEZH(907, "用户名被占用"), 
+	ERROR_ROLE_ID(908, "删除角色失败"), 
 
 	;
 

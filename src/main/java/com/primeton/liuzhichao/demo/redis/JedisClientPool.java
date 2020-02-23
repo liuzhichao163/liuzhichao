@@ -23,7 +23,6 @@ public class JedisClientPool implements JedisClient{
 		//从连接池中获取一个连接
 		Jedis jedis = jedisPool.getResource();
         String result = jedis.set(key, value);
-        System.out.println("-----set方法-------");
         jedis.close(); 
         return result;
 	}
@@ -41,7 +40,6 @@ public class JedisClientPool implements JedisClient{
 		Jedis jedis = jedisPool.getResource();
         String result = jedis.get(key);
         jedis.close();
-        System.out.println("get方法："+JSON.toJSONString(result));
         return result;
 	}
 
@@ -121,7 +119,6 @@ public class JedisClientPool implements JedisClient{
 		Jedis jedis = jedisPool.getResource();
 		System.out.println("===setNX==="+key+"---"+value);
 		Long result = jedis.setnx(key, value);
-		System.out.println("===result==="+result);
 		jedis.close();
 		return result;
 	}

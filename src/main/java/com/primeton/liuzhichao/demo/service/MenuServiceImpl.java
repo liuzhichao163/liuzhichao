@@ -23,7 +23,7 @@ public class MenuServiceImpl implements IMenuService{
 	}
 
 	@Override
-	@RedisCache
+//	@RedisCache
 	public List<Menu> getMenuByUserId() {
 		System.out.println("---当前用户id------:"+Utils.getCurrentUser());
 		return menuMapper.getMenusByUid(Utils.getCurrentUser().getId());

@@ -22,7 +22,7 @@
         	<result column="rnameZH" property="nameZH"/>
         </collection>
         <collection property="children" ofType="com.primeton.liuzhichao.demo.entity.Menu">
-        	<id column="id2" property="id"/>
+        		<id column="id2" property="id"/>
 	            <result column="path2" property="path"/>
 	            <result column="component2" property="component"/>
 	            <result column="iconCls2" property="iconCls"/>
@@ -76,6 +76,7 @@
 			m1.iconCls,
 			m1.name,
 			m1.requireAuth,
+			m2.id as id2,
 			m2.path as path2,
 			m2.component as component2,
 			m2.iconCls as iconCls2,
@@ -103,5 +104,34 @@
 		and m2.enabled=1
 		order by m1.id,m2.id
     </select>
+    
+    <!--新增菜单  -->
+    <insert id="addMneu" parameterType="com.primeton.liuzhichao.demo.entity.Menu" useGeneratedKeys="true" keyProperty="id">
+    	INSERT INTO 
+			liuzhichao_menu2 
+				( 	url,
+					path,
+					component,
+					name,
+					iconCls,
+					parentId,
+					enabled)
+		VALUES
+				(
+					#{url},
+					#{path},
+					#{component},
+					#{name},
+					#{iconCls},
+					#{parentId},
+					#{enabled}
+				)
+    </insert>
+    
+ 
+    
+    
+    
+    
     
 </mapper>

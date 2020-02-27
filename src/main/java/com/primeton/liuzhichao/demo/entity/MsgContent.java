@@ -1,5 +1,6 @@
 package com.primeton.liuzhichao.demo.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
@@ -11,7 +12,11 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class MsgContent {
+public class MsgContent implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5800068096161093598L;
 	private Integer id;
 	private String title;
 	private String content;

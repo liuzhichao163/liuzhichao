@@ -1,5 +1,6 @@
 package com.primeton.liuzhichao.demo.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,11 @@ import java.util.List;
  *
  */
 
-public class PageInfoUser {
+public class PageInfoUser implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2194894088304689706L;
 	// 总的数据条数
 	private Integer count;
 	// 每次查询数据集合

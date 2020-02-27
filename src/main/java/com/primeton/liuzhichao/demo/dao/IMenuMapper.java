@@ -21,5 +21,13 @@ public interface IMenuMapper {
 	 * @return 菜单列表
 	 */
 	List<Menu> getMenusByUid(Integer userId);
+	
+	/**
+	 * 新增菜单
+	 * @param menu
+	 * @return
+	 */
+	Integer addMneu(Menu menu);
+	
 
 }

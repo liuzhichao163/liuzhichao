@@ -23,6 +23,7 @@ public class Menu implements Serializable{
 	private String name;
 	private String iconCls;
 	private Long parentId;
+	private Long enabled;
 	private MenuMeta meta;
 	private List<Role> roles;
 	private List<Menu> children;
@@ -32,7 +33,7 @@ public class Menu implements Serializable{
 	}
 
 	public Menu(Long id, String url, String path, String component, String name, String iconCls, Long parentId,
-			MenuMeta meta, List<Role> roles, List<Menu> children) {
+			Long enabled, MenuMeta meta, List<Role> roles, List<Menu> children) {
 		super();
 		this.id = id;
 		this.url = url;
@@ -41,6 +42,7 @@ public class Menu implements Serializable{
 		this.name = name;
 		this.iconCls = iconCls;
 		this.parentId = parentId;
+		this.enabled = enabled;
 		this.meta = meta;
 		this.roles = roles;
 		this.children = children;
@@ -130,6 +132,17 @@ public class Menu implements Serializable{
 	public void setChildren(List<Menu> children) {
 		this.children = children;
 	}
+
+	public Long getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Long enabled) {
+		this.enabled = enabled;
+	}
+
+
+	
 	
 	
 

@@ -4,10 +4,8 @@ import java.util.List;
 
 import com.primeton.liuzhichao.demo.entity.Org;
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
-import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 
-import io.swagger.models.auth.In;
 
 /**
  * 部门Service层接口Api

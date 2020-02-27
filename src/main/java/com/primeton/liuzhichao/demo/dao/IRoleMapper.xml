@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.primeton.liuzhichao.demo.dao.IRoleMapper">
+	<resultMap id="BaseResultMap" type="com.primeton.liuzhichao.demo.entity.Role">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="nameZH" property="nameZH"/>
+	</resultMap>
+	
+	<!-- 添加角色  -->
+    <insert id="addRole" parameterType="com.primeton.liuzhichao.demo.entity.Role" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 
+			liuzhichao_role (name, nameZH) 
+		VALUES
+			(#{name},#{nameZH})
+	</insert>
+	
+	<!--根据角色名称查询角色  -->
+	<select id="getRoleByNameZH" resultMap="BaseResultMap">
+		SELECT
+			r.id,
+			r.name,
+			r.nameZH 
+		FROM
+			liuzhichao_role r 
+		WHERE
+			r.nameZH = #{nameZH}
+	</select>
+	
+	<!--查询角色列表  -->
+	<select id="getRoles" resultMap="BaseResultMap">
+		SELECT
+			r.id,
+			r.NAME,
+			r.nameZH 
+		FROM
+			liuzhichao_role r
+		where 1=1
+			<if test="userName != null and userName != ''">
+				and r.nameZH like concat('%',#{userName},'%')
+			</if>
+	</select>
+	
+	<!--根据id修改角色信息  -->
+	<update id="updateRoleById">
+		UPDATE 
+			liuzhichao_role r 
+		SET 
+			r.nameZH = #{nameZH}
+		WHERE
+			r.id = #{id}
+	</update>
+	
+	<!--根据角色id删除角色信息  -->
+	<delete id="deteleRoleById">
+		 DELETE FROM liuzhichao_role WHERE ID = #{id}
+	</delete>
+    
+</mapper>

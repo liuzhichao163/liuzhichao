@@ -11,7 +11,6 @@ import com.primeton.liuzhichao.demo.dao.IMsgMapper;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
-import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 
 @Service

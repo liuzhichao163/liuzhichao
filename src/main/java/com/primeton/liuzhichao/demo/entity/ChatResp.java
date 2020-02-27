@@ -1,4 +1,7 @@
 package com.primeton.liuzhichao.demo.entity;
+
+import java.io.Serializable;
+
 /**
  * 消息实体类
  * msg：消息内容
@@ -6,8 +9,13 @@ package com.primeton.liuzhichao.demo.entity;
  * @author ASUS
  *
  */
-public class ChatResp {
+public class ChatResp implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5090471725636392030L;
+
 	private String msg;
 	
 	private String from;

@@ -3,16 +3,13 @@ package com.primeton.liuzhichao.demo.redis;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-//@Service
-@Component
+@Service
+//@Component
 public class JedisClientPool implements JedisClient{
 	
 	@Autowired  //jedis连接池

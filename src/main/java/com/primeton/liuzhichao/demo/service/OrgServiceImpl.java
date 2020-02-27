@@ -13,8 +13,6 @@ import com.primeton.liuzhichao.demo.entity.PageInfoUser;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.DemoException;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
-import com.primeton.liuzhichao.demo.redis.RedisCache;
-import com.primeton.liuzhichao.demo.redis.RedisDel;
 
 /**
  * 部门Service层Api

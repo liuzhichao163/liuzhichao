@@ -21,5 +21,15 @@ public interface IMenuService {
 	 * 根据当前用户id查询菜单
 	 */
 	List<Menu> getMenuByUserId();
+	
+	/**
+	 * 新增菜单
+	 */
+	Integer addMenu(Menu menu);
+	
+	/**
+	 * 修改菜单
+	 */
+	//Integer updateMneu(Menu menu);
 
 }

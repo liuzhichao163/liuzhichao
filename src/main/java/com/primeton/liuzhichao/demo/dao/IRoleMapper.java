@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.primeton.liuzhichao.demo.entity.Menu;
 import com.primeton.liuzhichao.demo.entity.Role;
 
 @Mapper
@@ -44,5 +45,22 @@ public interface IRoleMapper {
 	 * @return
 	 */
 	Integer deteleRoleById(Integer id);
-
+	
+	/**
+	 *给角色授权菜单 
+	 * @param mids   菜单id数组
+	 * @param rid    角色id
+	 * @return
+	 */
+	Integer addRoleMenu(String[] mids,String rid);
+	
+	/**
+	 * 根据rid查询mid
+	 */
+	List<String> queryMidsById(String id);
+	
+	/**
+	 * 根据rid和mid删除记录
+	 */
+	Integer deteleMenuRoleByid(@Param("mids") String[] mids,@Param("rid") String rid);
 }

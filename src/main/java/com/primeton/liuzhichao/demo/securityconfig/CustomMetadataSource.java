@@ -9,7 +9,6 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-import org.springframework.test.web.servlet.result.FlashAttributeResultMatchers;
 import org.springframework.util.AntPathMatcher;
 
 import com.primeton.liuzhichao.demo.entity.Menu;

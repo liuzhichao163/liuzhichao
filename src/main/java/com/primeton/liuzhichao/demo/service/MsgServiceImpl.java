@@ -11,6 +11,7 @@ import com.primeton.liuzhichao.demo.dao.IMsgMapper;
 import com.primeton.liuzhichao.demo.dao.IUserMapper;
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
+import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 
 @Service
@@ -53,6 +54,12 @@ public class MsgServiceImpl implements IMsgService{
 			return msgMapper.updateMsgState(flage, uid) == 1;
 		}
 		
+	}
+
+	@Override
+	public List<UserAndOrg> getUsers() {
+		List<UserAndOrg> users =  userMapper.queryUsers();
+		return users;
 	}
 
 }

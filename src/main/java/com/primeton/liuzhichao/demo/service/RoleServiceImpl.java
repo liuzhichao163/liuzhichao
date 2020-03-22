@@ -1,5 +1,7 @@
 package com.primeton.liuzhichao.demo.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.primeton.liuzhichao.demo.dao.IRoleMapper;
 import com.primeton.liuzhichao.demo.entity.Role;
 import com.primeton.liuzhichao.demo.exception.DemoException;
@@ -85,6 +88,33 @@ public class RoleServiceImpl implements IRoleService{
 			throw new DemoException(ExceptionEnum.ERROR_ROLE_ID);
 		}
 		return result;
+	}
+
+	@Override
+	public Integer addRoleMenu(String[] mids, String rid) {
+		Integer addResult = null;
+		Integer delResult = null;
+		List<String> list = roleMapper.queryMidsById(rid);
+		List<String> delList = new ArrayList<>(list.size());
+		List<String> addList = new ArrayList<>(mids.length);
+		delList.addAll(list);
+		Collections.addAll(addList, mids);  //数组转list
+		//取delList和newList的差集得到要删除的mid
+		delList.removeAll(addList);
+		//取newList和addList的差集得到要新增的mid
+		addList.removeAll(list);
+		
+		if(addList.size() > 0) {
+			String[] add = new String[addList.size()];
+			addList.toArray(add);
+			addResult = roleMapper.addRoleMenu(add, rid);
+		}
+		if(delList.size() > 0) {
+			String[] del = new String[delList.size()];
+			delList.toArray(del);
+			delResult = roleMapper.deteleMenuRoleByid(del, rid);
+		}
+		return addResult;
 	}
 
 }

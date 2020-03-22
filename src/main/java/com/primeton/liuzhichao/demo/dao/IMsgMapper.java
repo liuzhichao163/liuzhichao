@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
+import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 
 @Mapper
@@ -40,5 +41,11 @@ public interface IMsgMapper {
 	 * @return       受影响的行数
 	 */
 	int updateMsgState(@Param("flage") Long flage, @Param("uid") Long uid);
+	
+	/**
+	 * 查询所有用户列表
+	 * @return
+	 */
+	List<User> getUsers();
 
 }

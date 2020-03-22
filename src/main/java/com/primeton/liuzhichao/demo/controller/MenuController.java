@@ -31,11 +31,25 @@ public class MenuController {
 	 * 根据用户id查询菜单列表
 	 * @return
 	 */
-	@GetMapping()
+	@GetMapping("/uid")
 	public List<Menu> getMenuByUserId(){
 		return menuService.getMenuByUserId();
 	}
 	
+	/**
+	 * 查询所有菜单
+	 * @return
+	 */
+	@GetMapping()
+	public List<Menu> getMenu(){
+		return menuService.getMenus2();
+	}
+	
+	/**
+	 * 新增/修改菜单
+	 * @param menu
+	 * @return
+	 */
 	@PostMapping()
 	public ResponseResult<Void> addMenu(Menu menu){
 		menuService.addMenu(menu);

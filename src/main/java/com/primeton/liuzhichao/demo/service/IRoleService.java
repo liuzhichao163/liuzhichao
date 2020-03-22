@@ -30,4 +30,19 @@ public interface IRoleService {
 	 * 根据角色id删除角色信息
 	 */
 	Integer deleteRole(Integer id);
+	
+	/**
+	 *给角色授权菜单 
+	 * @param mids   菜单id数组
+	 * @param rid    角色id
+	 * @return
+	 */
+	Integer addRoleMenu(String[] mids,String rid);
+	
+	
+	
+			
+			
+			
+	
 }

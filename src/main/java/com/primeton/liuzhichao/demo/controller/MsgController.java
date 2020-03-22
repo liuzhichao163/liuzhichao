@@ -1,6 +1,8 @@
 package com.primeton.liuzhichao.demo.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
+import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.IMsgService;
 
@@ -32,7 +35,6 @@ public class MsgController {
 	public ResponseResult<Void> addMsg(@RequestBody MsgContent msg){
 		System.out.println("======msg======"+msg.toString());
 		if(msgService.addMsg(msg)) {
-			System.out.println(new ResponseResult<Void>(ExceptionEnum.SUCCESS));
 			return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 		}else {
 			return new ResponseResult<Void>(ExceptionEnum.ERROR_SYSMSG_FAILURE);
@@ -58,12 +60,20 @@ public class MsgController {
 	 */
 	@PutMapping()
 	public ResponseResult<Void> updateMsgState(Long flage){
-		System.out.println("---------flage--------:"+flage);
 		if(msgService.updataMsgState(flage, 50L)) {
 			return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 		}else {
 			return new ResponseResult<Void>(ExceptionEnum.UNKONW_ERROR);
 		}
+	}
+	
+	/**
+	 * 查询用户列表
+	 * @return
+	 */
+	@GetMapping("/users")
+	public List<UserAndOrg> getUsers(){
+		return msgService.getUsers();
 	}
 
 }

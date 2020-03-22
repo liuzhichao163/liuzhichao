@@ -9,6 +9,36 @@
 		<result column="nameZH" property="nameZH"/>
 	</resultMap>
 	
+	<!--mybatils的级联一对多查询；property对应Role中的集合属性，ofType对应集合中泛型的属性，select对用所要查询的sql，column对应sql的参数(id对应Role的id属性)  -->
+	<resultMap id="SonResultMap" type="com.primeton.liuzhichao.demo.entity.Role" extends="BaseResultMap">
+       <collection property="mids" ofType="String" select="queryMidsById" column="id">
+       </collection>
+	</resultMap>
+	
+	<!--根据角色id查询菜单id  -->
+	<select id="queryMidsById"  resultType="String">
+		select 
+			mr.mid 
+		from 
+			liuzhichao_menu_role2 mr 
+		where 
+			mr.rid = #{id}
+	</select>
+	
+	<!--查询角色列表  -->
+	<select id="getRoles" resultMap="SonResultMap">
+		SELECT
+			r.id,
+			r.NAME,
+			r.nameZH
+		FROM
+			liuzhichao_role r
+		WHERE 1=1 
+			<if test="userName != null and userName != ''">
+				and r.nameZH like concat('%',#{userName},'%')
+			</if>
+	</select>
+	
 	<!-- 添加角色  -->
     <insert id="addRole" parameterType="com.primeton.liuzhichao.demo.entity.Role" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO 
@@ -29,19 +59,6 @@
 			r.nameZH = #{nameZH}
 	</select>
 	
-	<!--查询角色列表  -->
-	<select id="getRoles" resultMap="BaseResultMap">
-		SELECT
-			r.id,
-			r.NAME,
-			r.nameZH 
-		FROM
-			liuzhichao_role r
-		where 1=1
-			<if test="userName != null and userName != ''">
-				and r.nameZH like concat('%',#{userName},'%')
-			</if>
-	</select>
 	
 	<!--根据id修改角色信息  -->
 	<update id="updateRoleById">
@@ -57,5 +74,27 @@
 	<delete id="deteleRoleById">
 		 DELETE FROM liuzhichao_role WHERE ID = #{id}
 	</delete>
-    
+	
+	<!--新增 角色-菜单 关系表数据 -->
+    <insert id="addRoleMenu">
+		INSERT INTO 
+			liuzhichao_menu_role2 (mid, rid) 
+		VALUES
+		<foreach item="mid" collection="mids" separator=",">
+			(#{mid},#{rid})
+		</foreach>
+	</insert>
+	
+	<!--根据rid和mid删除记录  -->
+	<delete id="deteleMenuRoleByid">
+		 DELETE FROM 
+		 	liuzhichao_menu_role2 
+		 WHERE 
+		 	rid = #{rid}
+		 AND mid in 
+		<foreach collection="mids" item="mid" separator="," open="(" close=")">
+       	 #{mid}
+      	</foreach>	
+	</delete>
+	
 </mapper>

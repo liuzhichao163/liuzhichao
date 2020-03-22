@@ -23,6 +23,11 @@ public interface IMenuService {
 	List<Menu> getMenuByUserId();
 	
 	/**
+	 *  查询全部的菜单列表，不包含权限
+	 */
+	List<Menu> getMenus2();
+	
+	/**
 	 * 新增菜单
 	 */
 	Integer addMenu(Menu menu);

@@ -10,17 +10,22 @@ import com.primeton.liuzhichao.demo.entity.Menu;
 public interface IMenuMapper {
 	
 	/**
-	 * 查询所有菜单列表
+	 * 查询所有菜单列表  带权限
 	 * @return
 	 */
 	List<Menu> getMenus();
 	
 	/**
-	 * 根据用户id查询菜单
-	 * @param UserId
-	 * @return 菜单列表
+	 * 查询所有菜单列表 不带权限
+	 * 
 	 */
-	List<Menu> getMenusByUid(Integer userId);
+	List<Menu> getMenus2();
+	
+	/**
+	 * 根据uid查询菜单
+	 * @return
+	 */
+	List<Menu> getMenusByUid(Integer integer);
 	
 	/**
 	 * 新增菜单

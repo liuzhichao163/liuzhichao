@@ -41,31 +41,56 @@
     
     <!--查询所有用户的有效信息  -->
     <select id="getMenus" resultMap="BaseResultMap">
-    	 select 
-			m.id,
-			m.url,
-			m.path,
-			m.component,
-			m.name,
-			m.iconCls,
-			m.keepAlive,
-			m.requireAuth,
-			m.parentId,
-			m.enabled,
-			r.id as rid,
-			r.name as rname,
-			r.nameZh as rnameZH
+	    	 select 
+				m.id,
+				m.url,
+				m.path,
+				m.component,
+				m.name,
+				m.iconCls,
+				m.keepAlive,
+				m.requireAuth,
+				m.parentId,
+				m.enabled,
+				r.id as rid,
+				r.name as rname,
+				r.nameZh as rnameZH
+			from 
+				liuzhichao_menu2 m
+			left join 
+				liuzhichao_menu_role2 mr
+			on 
+				m.id = mr.mid
+			left join 
+				liuzhichao_role r
+			on 
+				r.id = mr.rid
+			order by m.id desc
+    </select>
+    
+     <select id="getMenus2" resultMap="BaseResultMap">
+    	select 
+			m1.id,
+			m1.path,
+			m1.component,
+			m1.iconCls,
+			m1.name,
+			m1.requireAuth,
+			m2.id as id2,
+			m2.path as path2,
+			m2.component as component2,
+			m2.iconCls as iconCls2,
+			m2.name as name2,
+			m2.requireAuth as requireAuth2,
+			m2.keepAlive as keepAlive2
 		from 
-			liuzhichao_menu2 m
-		left join 
-			liuzhichao_menu_role2 mr
-		on 
-			m.id = mr.mid
-		left join 
-			liuzhichao_role r
-		on 
-			r.id = mr.rid
-		order by m.id desc
+			liuzhichao_menu2 m1,
+			liuzhichao_menu2 m2
+		where
+			m1.id = m2.parentId
+		and m1.id != 1
+		and m2.enabled=1
+		order by m1.id,m2.id
     </select>
     
     <select id="getMenusByUid" resultMap="BaseResultMap">

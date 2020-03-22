@@ -20,7 +20,7 @@ public class MD5Utils {
 			cs[i + 1] = c;
 			cs[i + 2] = rawPassword.charAt(i / 3 * 2 + 1);
 		}
-		System.out.println("------cs-------:"+String.valueOf(cs));
+		//System.out.println("------cs-------:"+String.valueOf(cs));
 		return String.valueOf(cs);
 
 	}

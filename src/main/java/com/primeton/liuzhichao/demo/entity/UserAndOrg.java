@@ -23,13 +23,14 @@ public class UserAndOrg implements Serializable {
 	private String orgName;
 	private String orgLoc;
 	private String pId;
+	private String httpUserFace;
 
 	public UserAndOrg() {
 		super();
 	}
 
 	public UserAndOrg(Integer id, String userId, String userName, String userPassword, String job, String mgrId,
-			String orgId, String orgName, String orgLoc, String pId) {
+			String orgId, String orgName, String orgLoc, String pId, String httpUserFace) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -41,6 +42,7 @@ public class UserAndOrg implements Serializable {
 		this.orgName = orgName;
 		this.orgLoc = orgLoc;
 		this.pId = pId;
+		this.httpUserFace = httpUserFace;
 	}
 
 	public Integer getId() {
@@ -126,12 +128,23 @@ public class UserAndOrg implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	
+	 
+
+	public String getHttpUserFace() {
+		return httpUserFace;
+	}
+
+	public void setHttpUserFace(String httpUserFace) {
+		this.httpUserFace = httpUserFace;
+	}
 
 	@Override
 	public String toString() {
 		return "UserAndOrg [id=" + id + ", userId=" + userId + ", userName=" + userName + ", userPassword="
 				+ userPassword + ", job=" + job + ", mgrId=" + mgrId + ", orgId=" + orgId + ", orgName=" + orgName
-				+ ", orgLoc=" + orgLoc + ", pId=" + pId + "]";
+				+ ", orgLoc=" + orgLoc + ", pId=" + pId + ", httpUserFace=" + httpUserFace + "]";
 	}
 
+	
 }

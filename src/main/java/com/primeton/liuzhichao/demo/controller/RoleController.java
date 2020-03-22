@@ -46,4 +46,10 @@ public class RoleController {
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
 	
+	@PostMapping("/menu")
+	public ResponseResult<Void> addRoleMenu(String[] mids, String rid){
+		roleService.addRoleMenu(mids, rid);
+		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
+	}
+	
 }

@@ -1,8 +1,12 @@
 package com.primeton.liuzhichao.demo.service;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
+import com.primeton.liuzhichao.demo.entity.User;
+import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 
 /**
  * 消息处理逻辑类
@@ -33,5 +37,11 @@ public interface IMsgService {
 	 * @return      
 	 */
 	Boolean updataMsgState(Long flage, Long uid);
+	
+	/**
+	 * 查询所有用户列表
+	 * @return
+	 */
+	List<UserAndOrg> getUsers();
 
 }

@@ -66,4 +66,18 @@
 		</if> 
 	</update>
 	
+	<select id="getUsers" resultType="com.primeton.liuzhichao.demo.entity.User">
+		SELECT
+			U.ID,
+			U.USER_ID AS USERID,
+			U.USER_NAME AS USERNAME,
+			U.USER_PASSWORD AS USERPASSWORD,
+			U.JOB AS JOB,
+			U.MGR_ID AS MGRID,
+			U.ORG_ID AS ORGID,
+			U.HTTP_USERFACE AS HTTPUSERFACE
+		FROM
+			LIUZHICHAO_USER U
+	</select>
+	
 </mapper>

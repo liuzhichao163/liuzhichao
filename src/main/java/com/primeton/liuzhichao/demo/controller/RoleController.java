@@ -23,7 +23,7 @@ public class RoleController {
 	IRoleService roleService;
 	
 	@PostMapping()
-	public ResponseResult<Void> addRole(Role role){
+	public ResponseResult<Void> addRole(@RequestBody Role role){
 	    roleService.addRole(role);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}

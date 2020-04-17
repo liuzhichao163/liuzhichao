@@ -32,7 +32,7 @@ public interface IMsgMapper {
 	 * 查询系统消息列表
 	 * @return 系统消息对象集合
 	 */
-	List<SysMsg> queryMsgs();
+	List<SysMsg> queryMsgs(Integer uid);
 	
 	/**
 	 * 修改系统消息的状态
@@ -40,7 +40,7 @@ public interface IMsgMapper {
 	 * @param uid    当前用户的id
 	 * @return       受影响的行数
 	 */
-	int updateMsgState(@Param("flage") Long flage, @Param("uid") Long uid);
+	int updateMsgState(@Param("flage") Long flage, @Param("uid") Integer uid);
 	
 	/**
 	 * 查询所有用户列表

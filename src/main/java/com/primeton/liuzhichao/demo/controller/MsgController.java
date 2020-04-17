@@ -15,9 +15,11 @@ import com.github.pagehelper.PageInfo;
 import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.ResponseResult;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
+import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
 import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.IMsgService;
+import com.primeton.liuzhichao.demo.utils.Utils;
 
 @RestController
 @RequestMapping("api/msg")
@@ -59,8 +61,9 @@ public class MsgController {
 	 * @return      
 	 */
 	@PutMapping()
-	public ResponseResult<Void> updateMsgState(Long flage){
-		if(msgService.updataMsgState(flage, 50L)) {
+	public ResponseResult<Void> updateMsgState(@RequestBody Long flage){
+		Integer uid = Utils.getCurrentUser().getId();
+		if(msgService.updataMsgState(flage, uid)) {
 			return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 		}else {
 			return new ResponseResult<Void>(ExceptionEnum.UNKONW_ERROR);

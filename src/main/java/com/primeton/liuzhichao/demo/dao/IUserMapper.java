@@ -123,5 +123,11 @@ public interface IUserMapper {
 	 * @return 受影响行数
 	 */
 	Integer updateUserFace(@Param("url") String url,@Param("httpUrl") String httpUrl,@Param("userId") String userId);
-
+	
+	/**
+	 * 导入excel用户数据，存在即更新，不存在即新增
+	 * @param userLlist
+	 * @return
+	 */
+	void createOrUptateUser(List<User> userList);
 }

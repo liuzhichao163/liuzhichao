@@ -82,8 +82,16 @@ public class UserServiceImpl implements IUserService,UserDetailsService {
 			throw new DemoException(ExceptionEnum.ERROR_USERNAME);
 		}
 		return data;
+	}
+	
+	/**
+	 * 导入excel用户数据，存在即更新，不存在即新增
+	 */
+	public void createOrUptateUser(List<User> userList){
+		userMapper.createOrUptateUser(userList);
 		
 	}
+	
 
 	/**
 	 * 删除用户功能

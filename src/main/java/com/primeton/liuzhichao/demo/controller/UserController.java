@@ -189,10 +189,8 @@ public class UserController extends BaseController {
 	 */
 	@PostMapping("/importEmp")
 	public ResponseResult<Void> importEmp(MultipartFile file){
-		List<User> userLlist = PoiUtils.importEmp(file);
-		for(int i=0; i<userLlist.size(); i++) {
-			userService.createUser(userLlist.get(i));
-		}
+		List<User> userList = PoiUtils.importEmp(file);
+		userService.createOrUptateUser(userList);
 		return new ResponseResult<Void>(ExceptionEnum.SUCCESS);
 	}
 	

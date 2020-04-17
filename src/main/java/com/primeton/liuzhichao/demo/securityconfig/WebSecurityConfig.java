@@ -72,24 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.userDetailsService(userService)
-      		.passwordEncoder(new PasswordEncoder() {
-				/**
-				 * 对比验证密码
-				 * rawPassword：要被验证的密码
-				 * encodedPassword：数据库中的密码
-				 */
-				@Override
-				public boolean matches(CharSequence rawPassword, String encodedPassword) {
-					return encodedPassword.equals(MD5Utils.md5(rawPassword.toString()));
-				}
-				/**
-				 * 进行将密码MD5加密
-				 */
-				@Override
-				public String encode(CharSequence rawPassword) {
-					return MD5Utils.md5(rawPassword.toString());
-				}
-			});
+      		.passwordEncoder(passwordEncoder());
 	}
 
 	 //WEB安全
@@ -100,76 +83,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-			// 重写权限认证方法
-			@Override
-			public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-				object.setSecurityMetadataSource(metadataSource);
-				object.setAccessDecisionManager(urlAccessDecisionManager);
-				return object;
-			}
-		}).and().formLogin().loginPage("/login_p").loginProcessingUrl("/login").usernameParameter("username")
-				.passwordParameter("password").failureHandler(new AuthenticationFailureHandler() {
-					// 重写访问失败返回信息
-					@Override
-					public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-							AuthenticationException exception) throws IOException, ServletException {
-
-						response.setContentType("application/json;charset=utf-8"); // 错误：此处将charset写成了chartset导致返回的msg为乱码
-						ResponseResult<Void> responseResult = null;
-						if (exception instanceof BadCredentialsException
-								|| exception instanceof UsernameNotFoundException) {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_PWD_FORMT);
-						} else if (exception instanceof LockedException) {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_LOCK);
-						} else if (exception instanceof CredentialsExpiredException) {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_PWD_PASTDUE);
-						} else if (exception instanceof AccountExpiredException) {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_PASTDUE);
-						} else if (exception instanceof DisabledException) {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_DISABLED);
-						} else {
-							responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_LOGIN_FAILURE);
-						}
-
-						response.setStatus(401);
-						ObjectMapper om = new ObjectMapper();
-						PrintWriter pw = response.getWriter();
-						pw.write(om.writeValueAsString(responseResult));
-						pw.flush();
-						pw.close();
-
-					}
-				}).successHandler(new AuthenticationSuccessHandler() {
-					// 重写认证成功返回信息
-					@Override
-					public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-							Authentication authentication) throws IOException, ServletException {
-
-						response.setContentType("application/json;charset=utf-8");
-						ResponseResult<T> responseResult = new ResponseResult<T>(ExceptionEnum.SUCCESS,Utils.getCurrentUser());
-						PrintWriter pw = response.getWriter();
-						ObjectMapper om = new ObjectMapper();
-						pw.write(om.writeValueAsString(responseResult));
-						pw.flush();
-						pw.close();
-					}
-				}).permitAll().and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler() {
-
-					@Override
-					public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-							Authentication authentication) throws IOException, ServletException {
-
-						response.setContentType("application/json;chartset=utf-8");
-						ResponseResult<Void> responseResult = new ResponseResult<Void>(ExceptionEnum.SUCCESS);
-						PrintWriter pw = response.getWriter();
-						ObjectMapper om = new ObjectMapper();
-						pw.write(om.writeValueAsString(responseResult));
-						pw.flush();
-						pw.close();
-
-					}
-				}).permitAll().and().csrf().disable().exceptionHandling().accessDeniedHandler(deniedHandler)
+		http.authorizeRequests()
+				.withObjectPostProcessor(objectPostProcessor())
+				.and()
+				.formLogin()
+				.loginPage("/login_p")
+				.loginProcessingUrl("/login")
+				.usernameParameter("username")
+				.passwordParameter("password")
+				.failureHandler(authenticationFailureHandler())
+				.successHandler(authenticationSuccessHandler())
+				.permitAll()
+				.and()
+				.logout()
+				.logoutUrl("/logout")
+				.logoutSuccessHandler(logoutSuccessHandler())
+				.permitAll()
+				.and()
+				.csrf()
+				.disable()
+				.exceptionHandling()
+				.accessDeniedHandler(deniedHandler)
 				.authenticationEntryPoint(authenticationEntryPoint());
 	}
 
@@ -188,5 +122,116 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			}
 		};
 	}
+	//认证成功返回信息
+	private AuthenticationSuccessHandler authenticationSuccessHandler() {
+		return new AuthenticationSuccessHandler() {
+			// 重写认证成功返回信息
+			@Override
+			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+					Authentication authentication) throws IOException, ServletException {
 
+				response.setContentType("application/json;charset=utf-8");
+				ResponseResult<T> responseResult = new ResponseResult<T>(ExceptionEnum.SUCCESS,Utils.getCurrentUser());
+				PrintWriter pw = response.getWriter();
+				ObjectMapper om = new ObjectMapper();
+				pw.write(om.writeValueAsString(responseResult));
+				pw.flush();
+				pw.close();
+			}
+		};
+	}
+    
+	//退出成功方法
+	private LogoutSuccessHandler logoutSuccessHandler() {
+		return new LogoutSuccessHandler() {
+			@Override
+			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+					Authentication authentication) throws IOException, ServletException {
+
+				response.setContentType("application/json;chartset=utf-8");
+				ResponseResult<Void> responseResult = new ResponseResult<Void>(ExceptionEnum.SUCCESS);
+				PrintWriter pw = response.getWriter();
+				ObjectMapper om = new ObjectMapper();
+				pw.write(om.writeValueAsString(responseResult));
+				pw.flush();
+				pw.close();
+
+			}
+		};
+		
+	}
+	
+	//认证失败返回信息
+	private AuthenticationFailureHandler authenticationFailureHandler() {
+		return new AuthenticationFailureHandler() {
+		// 重写访问失败返回信息
+		@Override
+		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException exception) throws IOException, ServletException {
+	
+				response.setContentType("application/json;charset=utf-8"); // 错误：此处将charset写成了chartset导致返回的msg为乱码
+				ResponseResult<Void> responseResult = null;
+				if (exception instanceof BadCredentialsException
+						|| exception instanceof UsernameNotFoundException) {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_PWD_FORMT);
+				} else if (exception instanceof LockedException) {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_LOCK);
+				} else if (exception instanceof CredentialsExpiredException) {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_PWD_PASTDUE);
+				} else if (exception instanceof AccountExpiredException) {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_PASTDUE);
+				} else if (exception instanceof DisabledException) {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_ID_DISABLED);
+				} else {
+					responseResult = new ResponseResult<Void>(ExceptionEnum.ERROR_LOGIN_FAILURE);
+				}
+	
+				response.setStatus(401);
+				ObjectMapper om = new ObjectMapper();
+				PrintWriter pw = response.getWriter();
+				pw.write(om.writeValueAsString(responseResult));
+				pw.flush();
+				pw.close();
+	
+			}
+		};
+	}
+	
+	//重写权限认证方法
+	private ObjectPostProcessor<FilterSecurityInterceptor> objectPostProcessor() {
+		return new ObjectPostProcessor<FilterSecurityInterceptor>() {
+
+			@Override
+			public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+				object.setSecurityMetadataSource(metadataSource);
+				object.setAccessDecisionManager(urlAccessDecisionManager);
+				return object;
+			}
+			
+			
+		};
+		
+	}
+	
+	//密码加密解密方法
+	private PasswordEncoder passwordEncoder() {
+		return new PasswordEncoder() {
+			/**
+			 * 对比验证密码
+			 * rawPassword：要被验证的密码
+			 * encodedPassword：数据库中的密码
+			 */
+			@Override
+			public boolean matches(CharSequence rawPassword, String encodedPassword) {
+				return encodedPassword.equals(MD5Utils.md5(rawPassword.toString()));
+			}
+			/**
+			 * 进行将密码MD5加密
+			 */
+			@Override
+			public String encode(CharSequence rawPassword) {
+				return MD5Utils.md5(rawPassword.toString());
+			}
+		};
+	}
 }

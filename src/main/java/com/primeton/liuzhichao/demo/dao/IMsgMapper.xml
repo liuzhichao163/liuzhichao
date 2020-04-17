@@ -49,7 +49,8 @@
 			LIUZHICHAO_SYSMSG SYS 
 		WHERE
 			MSG.id = SYS.mid 
-			AND SYS.uid = '50'
+		AND 
+			SYS.uid = #{uid}	
 		order by MSG.date desc 
 	</select>
 	
@@ -60,7 +61,7 @@
 		SET 
 			SYS.state = 1
 		WHERE
-			SYS.uid = '50'
+			SYS.uid = #{uid}
 		<if test="flage != -1">
 			AND SYS.mid = #{flage}
 		</if> 

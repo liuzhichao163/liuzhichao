@@ -1,6 +1,8 @@
 package com.primeton.liuzhichao.demo.service;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.primeton.liuzhichao.demo.entity.PageInfoUser;
@@ -97,5 +99,11 @@ public interface IUserService {
 	 * @return
 	 */
 	StringBuffer uploadUserFace(StringBuffer newUserFace, StringBuffer httpUrl, String oldUserFace);
+	
+	/**
+	 * 导入excel用户数据，存在即更新，不存在即新增
+	 * @param userList
+	 */
+	void createOrUptateUser(List<User> userList);
 
 }

@@ -13,6 +13,7 @@ import com.primeton.liuzhichao.demo.entity.MsgContent;
 import com.primeton.liuzhichao.demo.entity.SysMsg;
 import com.primeton.liuzhichao.demo.entity.User;
 import com.primeton.liuzhichao.demo.entity.UserAndOrg;
+import com.primeton.liuzhichao.demo.utils.Utils;
 
 @Service
 public class MsgServiceImpl implements IMsgService{
@@ -37,14 +38,15 @@ public class MsgServiceImpl implements IMsgService{
 
 	@Override
 	public PageInfo<SysMsg> queryMsgs(Integer page, Integer size) {
+		Integer uid = Utils.getCurrentUser().getId();
 		PageHelper.startPage(page, size);
-		List<SysMsg> list = msgMapper.queryMsgs();
+		List<SysMsg> list = msgMapper.queryMsgs(uid);
 		PageInfo<SysMsg> pageInfo = new PageInfo<SysMsg>(list);
 		return pageInfo;
 	}
 
 	@Override
-	public Boolean updataMsgState(Long flage, Long uid) {
+	public Boolean updataMsgState(Long flage, Integer uid) {
 		if(flage == -1) {
 			//'全部设置已读'按钮
 			msgMapper.updateMsgState(flage, uid);

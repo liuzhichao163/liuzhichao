@@ -167,4 +167,23 @@
 		WHERE
 			u.USER_ID = #{userId}
 	</update>
+	
+	<!-- 导入excel用户数据，存在即更新，不存在即新增 (KEY 必须是主键或者UNIQUE 索引) -->
+    <insert id="createOrUptateUser" parameterType="java.util.List">
+		INSERT INTO 
+			LIUZHICHAO_USER 
+			( USER_ID, USER_NAME, USER_PASSWORD, JOB, MGR_ID, ORG_ID )
+		VALUES
+		<foreach collection="list" item="item" index="index" separator="," >
+			(#{item.userId},#{item.name},#{item.password},#{item.job},#{item.mgrId},#{item.orgId})
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+			USER_ID = VALUES(USER_ID),
+			USER_NAME = VALUES(USER_NAME),
+			JOB = VALUES(JOB),
+			MGR_ID = VALUES(MGR_ID),
+			ORG_ID = VALUES(ORG_ID)
+	</insert>
+	
+	
 </mapper>

@@ -36,7 +36,7 @@ public interface IMsgService {
 	 * @param uid    当前用户的id
 	 * @return      
 	 */
-	Boolean updataMsgState(Long flage, Long uid);
+	Boolean updataMsgState(Long flage, Integer uid);
 	
 	/**
 	 * 查询所有用户列表

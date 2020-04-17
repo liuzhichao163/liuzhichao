@@ -27,8 +27,6 @@ public class WsController {
 	//Spring-WebSocket内置的一个消息发送工具,可以将消息发送到指定的客户端
 	@Autowired
     SimpMessagingTemplate simpMessagingTemplate;
-	
-	
 		@MessageMapping("/ws/nf")
 	    @SendTo("/topic/nf")  
 	    public String handleNF() throws InterruptedException {

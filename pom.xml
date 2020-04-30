@@ -24,6 +24,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-tomcat</artifactId>
+				   </exclusion>
+	   			</exclusions>	
 		</dependency>
 		<!--配置tomcat -->
 		 <dependency>
@@ -176,7 +182,13 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
-        </dependency>	
+        </dependency>
+        <!-- 配置servlet,打war包时放开 -->
+		<dependency> 
+		  <groupId>javax.servlet</groupId> 
+		  <artifactId>javax.servlet-api</artifactId> 
+		  <scope>provided</scope> 
+		</dependency>	
 	</dependencies>
 	
 	<build>

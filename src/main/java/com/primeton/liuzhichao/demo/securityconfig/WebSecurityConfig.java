@@ -32,6 +32,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.util.DigestUtils;
 
@@ -69,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	AuthenticationAccessDeniedHandler deniedHandler;
 	
 	
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		 auth.userDetailsService(userService)
@@ -91,8 +93,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginProcessingUrl("/login")
 				.usernameParameter("username")
 				.passwordParameter("password")
-				.failureHandler(authenticationFailureHandler())
-				.successHandler(authenticationSuccessHandler())
+				//.failureHandler(authenticationFailureHandler())
+				//.successHandler(authenticationSuccessHandler())
 				.permitAll()
 				.and()
 				.logout()
@@ -105,6 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.exceptionHandling()
 				.accessDeniedHandler(deniedHandler)
 				.authenticationEntryPoint(authenticationEntryPoint());
+		http.addFilterAt(myUsernamePasswordAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
 	}
 
 	// 用户未登录调用接口返回自定义信息
@@ -122,6 +125,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			}
 		};
 	}
+	
+	//注册自定义的UsernamePasswordAuthenticationFilter
+	@Bean
+	MyUsernamePasswordAuthenticationFilter myUsernamePasswordAuthenticationFilter() throws Exception {
+		MyUsernamePasswordAuthenticationFilter filter = new MyUsernamePasswordAuthenticationFilter();
+	    filter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+	    filter.setAuthenticationFailureHandler(authenticationFailureHandler());
+	    //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager
+	    filter.setAuthenticationManager(authenticationManagerBean());
+	    return filter;
+	}
+	
+	
 	//认证成功返回信息
 	private AuthenticationSuccessHandler authenticationSuccessHandler() {
 		return new AuthenticationSuccessHandler() {
@@ -200,7 +216,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//重写权限认证方法
 	private ObjectPostProcessor<FilterSecurityInterceptor> objectPostProcessor() {
 		return new ObjectPostProcessor<FilterSecurityInterceptor>() {
-
 			@Override
 			public <O extends FilterSecurityInterceptor> O postProcess(O object) {
 				object.setSecurityMetadataSource(metadataSource);

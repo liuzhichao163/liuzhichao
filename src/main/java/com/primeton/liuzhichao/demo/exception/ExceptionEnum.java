@@ -35,7 +35,8 @@ public enum ExceptionEnum {
 	ERROR_LOGIN_FAILURE(905,"登录失败"),
 	ERROR_PWD_PASTDUE(906,"密码过期请联系管理员"),
 	ERROR_ROLE_NAMEZH(907, "用户名被占用"), 
-	ERROR_ROLE_ID(908, "删除角色失败"), 
+	ERROR_ROLE_ID(908, "删除角色失败"),
+	ERROR_TOKEN_ILLEGAL(100,"认证token不合法"),
 
 	;
 

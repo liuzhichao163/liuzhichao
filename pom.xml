@@ -188,7 +188,7 @@
 		  <groupId>javax.servlet</groupId> 
 		  <artifactId>javax.servlet-api</artifactId> 
 		  <scope>provided</scope> 
-		</dependency>	
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -224,8 +224,14 @@
 		         <include>**/*</include>
 		      </includes>
 		   </resource>
-		</resources> 
-		
+			 <resource>
+				 <directory>src/main/java</directory>
+				 <includes>
+					 <include>**/*.xml</include>
+				 </includes>
+			 </resource>
+		</resources>
+
 	</build>
 	
 

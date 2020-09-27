@@ -13,7 +13,7 @@ import com.primeton.liuzhichao.demo.entity.ResponseResult;
 
 /**
  * 统一异常处理
- * 此处不会不会try/cach中抛出的异常
+ * 此处不会捕获try/cach中抛出的异常
  * @author ASUS
  *
  */

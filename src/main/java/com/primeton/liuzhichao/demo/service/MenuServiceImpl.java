@@ -24,7 +24,7 @@ public class MenuServiceImpl implements IMenuService{
 	@Override
 //	@RedisCache
 	public List<Menu> getMenuByUserId() {
-		//System.out.println(Utils.getCurrentUser().getId());
+//		System.out.println(Utils.getCurrentUser().toString());
 		return menuMapper.getMenusByUid(Utils.getCurrentUser().getId());
 	}
 	

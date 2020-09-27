@@ -16,6 +16,7 @@ public interface JedisClient {
 
 	/**
 	 * 设置key，value并设置过期时间
+	 * TIME 秒
 	 */
 	String set(String key, String value, int time);
 

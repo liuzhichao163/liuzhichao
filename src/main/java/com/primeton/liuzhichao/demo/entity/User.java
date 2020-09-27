@@ -1,9 +1,11 @@
 package com.primeton.liuzhichao.demo.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,7 @@ import lombok.ToString;
 @ApiModel(value = "用户对象", description = "员工对象User")
 //@Data
 @ToString
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
 	/**
 	 * 
@@ -37,7 +39,6 @@ public class User implements UserDetails {
 	private String oldPassword;
 	private String userFace;
 	private String httpUserFace;
-
 	private List<Role> roles;
 
 	public User() {
@@ -197,10 +198,7 @@ public class User implements UserDetails {
 	public void setHttpUserFace(String httpUserFace) {
 		this.httpUserFace = httpUserFace;
 	}
-	
-	
 
 
-	
 
 }

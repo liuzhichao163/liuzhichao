@@ -2,6 +2,7 @@ package com.primeton.liuzhichao.demo.utils;
 
 import java.io.File;
 
+import com.primeton.liuzhichao.demo.vo.UserVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 

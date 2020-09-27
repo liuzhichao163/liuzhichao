@@ -36,21 +36,13 @@ public class ResponseResult<T> {
 		this.state = exceptionEnum.getCode();
 	}
 	
-	public ResponseResult(ExceptionEnum exceptionEnum, User data) {
+
+	public ResponseResult(ExceptionEnum exceptionEnum, Object data) {
 		super();
 		this.message = exceptionEnum.getMsg();
 		this.state = exceptionEnum.getCode();
 		this.data = (T) data;
 	}
-	
-	public ResponseResult(ExceptionEnum exceptionEnum, String data) {
-		super();
-		this.message = exceptionEnum.getMsg();
-		this.state = exceptionEnum.getCode();
-		this.data = (T) data;
-	}
-	
-	
 
 	public ResponseResult(Exception e) {
 		super();

@@ -2,11 +2,22 @@ package com.primeton.liuzhichao.demo.securityconfig;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sound.midi.SoundbankResource;
 
+import com.primeton.liuzhichao.demo.entity.TokenProperties;
+import com.primeton.liuzhichao.demo.exception.FilterChainExceptionHandler;
+import com.primeton.liuzhichao.demo.redis.JedisClient;
+import com.primeton.liuzhichao.demo.utils.JwtUtils;
+import com.primeton.liuzhichao.demo.utils.MyBeanUtils;
+import com.primeton.liuzhichao.demo.vo.UserVo;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +33,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +47,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.util.DigestUtils;
 
@@ -43,6 +58,9 @@ import com.primeton.liuzhichao.demo.exception.ExceptionEnum;
 import com.primeton.liuzhichao.demo.service.UserServiceImpl;
 import com.primeton.liuzhichao.demo.utils.MD5Utils;
 import com.primeton.liuzhichao.demo.utils.Utils;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 /**
  * @EnableGlobalMethodSecurity(prePostEnabled = true) 使用表达式时间方法级别的安全性         4个注解可用
  * @PreAuthorize 在方法调用之前,基于表达式的计算结果来限制对方法的访问
@@ -68,8 +86,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	AuthenticationAccessDeniedHandler deniedHandler;
-	
-	
+
+    @Autowired
+    TokenProperties tokenProperties;
+
+    @Autowired
+	JedisClient jedisClient;
+
+	@Autowired
+	FilterChainExceptionHandler filterChainExceptionHandler;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -91,11 +116,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin()
 				.loginPage("/login_p")
 				.loginProcessingUrl("/login")
-				.usernameParameter("username")
+				.usernameParameter("name")
 				.passwordParameter("password")
 				//.failureHandler(authenticationFailureHandler())
 				//.successHandler(authenticationSuccessHandler())
 				.permitAll()
+				.and()                 // 基于token，所以不需要session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionFixation().none()
 				.and()
 				.logout()
 				.logoutUrl("/logout")
@@ -107,9 +136,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.exceptionHandling()
 				.accessDeniedHandler(deniedHandler)
 				.authenticationEntryPoint(authenticationEntryPoint());
+		http.addFilterBefore(jwtLoginFilter(),UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new JwtFilter(),UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAt(myUsernamePasswordAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
 	}
 
+	
+	
+	//注册自定义的JwtLoginFilter
+	@Bean
+	JwtLoginFilter jwtLoginFilter() throws Exception {
+		JwtLoginFilter jwtLoginFilter =	new JwtLoginFilter("/login",authenticationManager());
+		jwtLoginFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+		jwtLoginFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
+		return jwtLoginFilter;
+	}
+	
+	//注册自定义的JwtLoginFilter
+	@Bean
+	JwtFilter jwtFilter() {
+		JwtFilter jwtFilter = new JwtFilter();
+		return jwtFilter;
+	}
+	
+	//注册自定义的UsernamePasswordAuthenticationFilter
+	@Bean
+	MyUsernamePasswordAuthenticationFilter myUsernamePasswordAuthenticationFilter() throws Exception {
+		MyUsernamePasswordAuthenticationFilter filter = new MyUsernamePasswordAuthenticationFilter();
+	    //filter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+	    filter.setAuthenticationFailureHandler(authenticationFailureHandler());
+	    //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager
+	    filter.setAuthenticationManager(authenticationManagerBean());
+	    return filter;
+	}
+	
 	// 用户未登录调用接口返回自定义信息
 	private AuthenticationEntryPoint authenticationEntryPoint() {
 		return new AuthenticationEntryPoint() {
@@ -126,36 +187,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		};
 	}
 	
-	//注册自定义的UsernamePasswordAuthenticationFilter
-	@Bean
-	MyUsernamePasswordAuthenticationFilter myUsernamePasswordAuthenticationFilter() throws Exception {
-		MyUsernamePasswordAuthenticationFilter filter = new MyUsernamePasswordAuthenticationFilter();
-	    filter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
-	    filter.setAuthenticationFailureHandler(authenticationFailureHandler());
-	    //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager
-	    filter.setAuthenticationManager(authenticationManagerBean());
-	    return filter;
-	}
-	
-	
 	//认证成功返回信息
 	private AuthenticationSuccessHandler authenticationSuccessHandler() {
 		return new AuthenticationSuccessHandler() {
 			// 重写认证成功返回信息
 			@Override
 			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-					Authentication authentication) throws IOException, ServletException {
+												Authentication authentication) throws IOException, ServletException {
 
-				response.setContentType("application/json;charset=utf-8");
-				ResponseResult<T> responseResult = new ResponseResult<T>(ExceptionEnum.SUCCESS,Utils.getCurrentUser());
-				PrintWriter pw = response.getWriter();
-				ObjectMapper om = new ObjectMapper();
-				pw.write(om.writeValueAsString(responseResult));
-				pw.flush();
-				pw.close();
+				System.out.println("----------------!!!!!!!!!-----------------------");
+//				User user = (User) authentication.getPrincipal();
+//				response.setContentType("application/json;chartset=utf-8");
+//				ResponseResult<Void> responseResult = new ResponseResult<Void>(ExceptionEnum.SUCCESS);
+//				PrintWriter pw = response.getWriter();
+//				ObjectMapper om = new ObjectMapper();
+//				pw.write(om.writeValueAsString(responseResult));
+//				pw.flush();
+//				pw.close();
 			}
 		};
 	}
+	
     
 	//退出成功方法
 	private LogoutSuccessHandler logoutSuccessHandler() {
